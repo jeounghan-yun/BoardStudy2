@@ -6,7 +6,7 @@
 
     $(document).ready(function () {
         $("#file").on('change', function () {
-            fileUpload();
+            fileTemp();
         })
 
         if(boardMode.equals("E")){

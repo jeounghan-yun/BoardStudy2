@@ -1,7 +1,8 @@
+
 /**
  * 파일 임시 저장
  */
-fileUpload = function () {
+fileTemp = function () {
     var files = $('#file')[0].files;
     var fileList = $('#fileList');
     var formFile = new FormData;
@@ -20,7 +21,6 @@ fileUpload = function () {
         , contentType : false
         , success: function (data) {
             for (var i = 0; i < data.length; i++) {
-                console.log(data[i]);
                 fileList.append('<li>' + data[i] + '</li>');
             }
 
@@ -30,9 +30,3 @@ fileUpload = function () {
         }
     })
 }
-
-
-
-
-
-
