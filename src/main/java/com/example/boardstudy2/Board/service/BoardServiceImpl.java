@@ -1,7 +1,9 @@
 package com.example.boardstudy2.Board.service;
 
+import com.example.boardstudy2.Utils.FileUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.example.boardstudy2.Board.dao.BoardDAO;
 import com.example.boardstudy2.common.Common;
@@ -14,8 +16,11 @@ public class BoardServiceImpl implements BoardService{
     @Autowired
     private BoardDAO boardDAO;
 
-//    @Autowired
-//    private FileUpload fileupload;
+    @Autowired
+    private FileUtil fileUtil;
+
+    @Value("${part4.upload.path}")
+    private String uploadDir;
 
     /**
      * 게시물 리스트
@@ -54,9 +59,16 @@ public class BoardServiceImpl implements BoardService{
                 map.put("fileYn", "Y");
                 resultBoardInt = boardDAO.InsertBoardData(map);
 
-                map.put("mseq", map.get("seq"));  // 게시물 seq를 file의 상위 번호로 넣어줌.
+                if(resultBoardInt == 1){
+                    // 게시물 seq를 file의 상위 번호로 넣어줌.
+                    map.put("mseq", map.get("seq"));
 
-                resultFileInt = boardDAO.InsertFileData(map);
+                    // 임시폴더에서 -> 최종 업로드 폴더로 파일 이동
+                    fileUtil.uploadFile(map);
+
+                    //파일 DB에 저장
+                    boardDAO.InsertFileData(map);
+                }
             } else {
                 map.put("fileYn", "N");
 
