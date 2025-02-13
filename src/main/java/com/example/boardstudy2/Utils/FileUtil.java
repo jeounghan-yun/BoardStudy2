@@ -44,14 +44,9 @@ public class FileUtil {
                 throw new IOException("파일 이름이 올바르지 않습니다.");
             }
 
-            // 임시 파일명을 방지하기 위해 UUID로 새로운 파일명 생성
-//            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-//            String newFileName = UUID.randomUUID().toString() + fileExtension;
-
             Path tempPath = Paths.get(tempDir, originalFileName);
             byte[] bytes = file.getBytes();
             Files.write(tempPath, bytes);
-//            Files.copy(file.getInputStream(), tempPath, StandardCopyOption.REPLACE_EXISTING);
 
             fileNmList.add(originalFileName);
         }
