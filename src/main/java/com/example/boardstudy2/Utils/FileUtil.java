@@ -22,11 +22,6 @@ public class FileUtil {
 
         File dir = new File(tempDir);
 
-        // 폴더가 존재하지 않으면 새로 생성
-        if(!dir.exists()){
-            dir.mkdirs();
-        }
-
         // 폴더가 존재하면 파일 삭제 후 폴더도 삭제
         File[] filesInDir = dir.listFiles();
         if (filesInDir != null) {
@@ -37,6 +32,11 @@ public class FileUtil {
             }
         }
 
+        // 폴더가 존재하지 않으면 새로 생성
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
+
         // 파일 저장 및 파일 이름 추가
         for (MultipartFile file : files) {
             String originalFileName = file.getOriginalFilename();
@@ -45,13 +45,15 @@ public class FileUtil {
             }
 
             // 임시 파일명을 방지하기 위해 UUID로 새로운 파일명 생성
-            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-            String newFileName = UUID.randomUUID().toString() + fileExtension;
+//            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+//            String newFileName = UUID.randomUUID().toString() + fileExtension;
 
-            Path tempPath = Paths.get(tempDir, newFileName);
-            Files.copy(file.getInputStream(), tempPath, StandardCopyOption.REPLACE_EXISTING);
+            Path tempPath = Paths.get(tempDir, originalFileName);
+            byte[] bytes = file.getBytes();
+            Files.write(tempPath, bytes);
+//            Files.copy(file.getInputStream(), tempPath, StandardCopyOption.REPLACE_EXISTING);
 
-            fileNmList.add(newFileName);
+            fileNmList.add(originalFileName);
         }
 
         return fileNmList;
