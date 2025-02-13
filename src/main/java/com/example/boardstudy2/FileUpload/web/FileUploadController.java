@@ -15,6 +15,12 @@ public class FileUploadController {
     @Autowired
     private FileUtil flieUtil;
 
+    /**
+     * 파일 임시 저장
+     * @param files
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value="/Board/AjaxTempFile", method= RequestMethod.POST)
     @ResponseBody
     public List<String> fileUpload(@RequestParam("files") List<MultipartFile> files) throws IOException {
