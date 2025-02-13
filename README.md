@@ -4,3 +4,4 @@ version
   - spring boot 3.0.6
   - gradle
   - artifact : plain.war (exploded)
+  - DB : docker mariaDB
