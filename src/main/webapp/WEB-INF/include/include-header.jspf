@@ -1,0 +1,28 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
+
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판</title>
+    <link rel="stylesheet" href="assets/css/css.css">
+</head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"    type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.js"                             type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquer"            type="tesxt/javascript"></script>
+
+<script src="assets/js/modalPopup.js"                                             type="text/javascript"></script>
+<script src="assets/js/fileUpload.js"                                             type="text/javascript"></script>
+
+<%--datepicker--%>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+</html>

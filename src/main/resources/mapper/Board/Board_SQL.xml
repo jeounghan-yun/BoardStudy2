@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.board">
+    <!--게시물 검색-->
+    <sql id="srchBoard">
+        <if test="srchTitle != '' or srchTitle != null">
+            and TTL like concat('%', #{srchTitle}, '%')
+        </if>
+        <if test="srchReg != '' or srchReg != null">
+            and REG_ID like concat('%', #{srchReg}, '%')
+        </if>
+        <if test="startDate != '' and endDate != ''">
+            and SUBSTR(REG_DATE, 1, 8) BETWEEN #{startDate} and #{endDate}
+        </if>
+        <if test="startDate != '' and endDate == ''">
+            and SUBSTR(REG_DATE, 1, 8) >= #{startDate}
+        </if>
+        <if test="startDate == '' and endDate != ''">
+            and SUBSTR(REG_DATE, 1, 8) &lt;= #{endDate}
+        </if>
+    </sql>
+
+<!--    게시물 리스트-->
+    <select id="selectBoardList" parameterType="hashmap" resultType="hashmap">
+        <!--mapper.board.selectBoardList : 게시물 리스트-->
+        select SEQ                                           seq
+             , TTL                                           ttl
+             , CNTS                                          cnts
+             , READ_CNT                                      readCnt
+             , REG_ID                                        regId
+             , TO_CHAR(SUBSTR(REG_DATE, 1, 8), 'YYYY-MM-DD') regDate
+             , COUNT(*) OVER()                               totalCount
+          from ST_BOARD_MST
+         where 1=1
+           <include refid="srchBoard"/>
+           and DEL_ID is null
+         order by REG_DATE desc
+           <include refid="common.paging"/>
+    </select>
+
+    <!--게시물 등록-->
+    <insert id="insertBoardData" parameterType="hashmap">
+        <!--mapper.Board.insertBoardData : 게시물 등록-->
+        <selectKey keyProperty="seq" resultType="int" order="BEFORE">
+            select coalesce(MAX(seq),0)+1 from ST_BOARD_MST
+        </selectKey>
+        insert into ST_BOARD_MST (SEQ   , TTL   , CNTS   , REG_ID   , REG_DATE                              , FILE_YN)
+                          values (#{seq}, #{ttl}, #{cnts}, #{userId}, date_format(sysdate(), '%Y%m%d%H%i%S'), #{fileYn})
+    </insert>
+
+    <!--게시물 파일 등록-->
+    <insert id ="insertFileData" parameterType="hashmap">
+        <!--mapper.Board.insertFileData : 게시물 파일 등록-->
+        <selectKey keyProperty="seq" resultType="int" order="BEFORE">
+            select coalesce(MAX(seq),0)+1 from ST_BOARD_FILE
+        </selectKey>
+        insert into ST_BOARD_FILE(SEQ   , MSEQ   , FILE_NM  , FILE_FLPH, REG_ID  , REG_DATE)
+                           values(#{seq}, #{mseq}, #{file}  , #{flph}  , #{regId}, date_format(sysdate(), '%Y%m%d%H%i%S')
+    </insert>
+
+    <!--게시물 상세-->
+    <select id="boardDetailData" parameterType="hashmap" resultType="hashmap">
+        <!--mapper.Board.BoardDetailData : 게시물 상세-->
+        select SEQ                    seq
+             , TTL                    ttl
+             , CNTS                   cnts
+             , READ_CNT               readCnt
+             , REG_ID                 regId
+             , SUBSTR(REG_DATE, 1, 8) regDate
+          from ST_BOARD_MST
+         where 1=1
+           and SEQ = #{SEQ}
+    </select>
+
+    <!--게시물 조회수 업데이트-->
+    <update id="boardReadCnt" parameterType="hashmap">
+        <!--mapper.Board.BoardReadCnt : 게시물 조회수 업데이트-->
+        update ST_BOARD_MST
+           set READ_CNT = READ_CNT + 1
+         where 1=1
+           and SEQ = #{SEQ}
+    </update>
+
+    <!--게시물 삭제-->
+    <update id="boardDelData" parameterType="hashmap">
+        <!--mapper.Board.BoardDelData : 게시물 삭제-->
+        update ST_BOARD_MST
+           set DEL_ID   = 'Admin'
+             , DEL_DATE = DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%S')
+         where 1=1
+           and SEQ = #{SEQ}
+    </update>
+
+    <!--게시물 수정-->
+    <update id="boardEditData" parameterType="hashmap">
+        <!--mapper.Board.BoardEditData : 게시물 수정-->
+        update ST_BOARD_MST
+           set TTL       = #{ttl}
+             , CNTS      = #{cnts}
+             , EDIT_ID   = REG_ID
+             , EDIT_DATE = DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%S')
+         where 1=1
+           and SEQ = #{SEQ}
+    </update>
+
+
+    <!--게시물 리스트-->
+    <!--    <select id="selectBoardList" parameterType="hashmap" resultType="hashmap">-->
+    <!--        &lt;!&ndash;mapper.board.selectBoardList : 게시물 리스트&ndash;&gt;-->
+    <!--        select (-->
+    <!--                select JSON_ARRAYAGG(-->
+    <!--                                      JSON_OBJECT(-->
+    <!--                                                  'seq'    , SEQ,-->
+    <!--                                                  'ttl'    , TTL,-->
+    <!--                                                  'cnts'   , CNTS,-->
+    <!--                                                  'readCnt', READ_CNT,-->
+    <!--                                                  'regId'  , REG_ID,-->
+    <!--                                                  'regDate', TO_CHAR(SUBSTR(REG_DATE, 1, 8), 'YYYY-MM-DD')-->
+    <!--                                                 )-->
+    <!--                                    )-->
+    <!--                  from (SELECT SEQ-->
+    <!--                             , TTL-->
+    <!--                             , CNTS-->
+    <!--                             , READ_CNT-->
+    <!--                             , REG_ID-->
+    <!--                             , REG_DATE-->
+    <!--                          from ST_BOARD_MST-->
+    <!--                         where 1=1-->
+    <!--                           <include refid="srchBoard"/>-->
+    <!--                           and DEL_ID is null-->
+    <!--                         order by SEQ desc-->
+    <!--                           <include refid="common.paging"/>-->
+    <!--                       ) as dataList-->
+    <!--               ) AS dataList-->
+    <!--             , (select COUNT(*)-->
+    <!--                  from ST_BOARD_MST-->
+    <!--                 where 1=1-->
+    <!--                   and DEL_ID is null-->
+    <!--                   <include refid="srchBoard"/>-->
+    <!--               ) as totalCount;-->
+    <!--    </select>-->
+
+</mapper>
