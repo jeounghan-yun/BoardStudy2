@@ -50,12 +50,11 @@ public class BoardServiceImpl implements BoardService{
      */
     public String InsertBoardData(Map<String, Object> map, @RequestParam("files") List<MultipartFile> files) throws Exception {
         String result = "SUCCESS";
+        String userId = (String) map.get("userId");
 //        int resultBoardInt; // 게시판 글 성공 여부
 //        int resultFileInt;  // 게시물 파일 등록 성공 여부
 
         try {
-//            String fileNm = (String) map.get("files");
-
             // 파일 존재 확인
             if(files.size() > 0){
                 map.put("fileYn", "Y");
@@ -65,7 +64,7 @@ public class BoardServiceImpl implements BoardService{
 
                 if("SUCCESS".equals(result)){
                     map.put("mseq", map.get("rseq"));                // 게시물 seq를 file의 상위 번호로 넣어줌.
-                    map.put("flph", uploadDir);
+                    map.put("flph", uploadDir + userId + "/");
 
                     for (MultipartFile file : files) {
                         if (!file.isEmpty()) {
@@ -73,6 +72,7 @@ public class BoardServiceImpl implements BoardService{
                             boardDAO.InsertFileData(map);           // 파일 DB에 저장
                         }
                     }
+
                 } else {
                     result = "ERROR";
                 }

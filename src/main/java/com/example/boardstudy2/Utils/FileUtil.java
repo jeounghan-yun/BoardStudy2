@@ -70,8 +70,9 @@ public class FileUtil {
      */
     public String uploadFile(Map<String, Object> map) throws IOException {
         String result = "SUCCESS";              // 성공 여부
+        String userId = (String) map.get("userId");
         Path tmpDir   = Paths.get(tempDir);     // 임시 파일 폴더 경로
-        Path finalDir = Paths.get(uploadDir);   // 최종 파일 폴더 경로
+        Path finalDir = Paths.get(uploadDir, userId);   // 최종 파일 폴더 경로
 
         // 임시 폴더에 파일이 존재하는지 확인
         if (Files.exists(tmpDir) && Files.isDirectory(tmpDir)) {
@@ -88,6 +89,7 @@ public class FileUtil {
                     Files.move(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
                 }
             }
+
             // 임시 폴더가 비어 있으면 삭제
 //            if (Files.list(tmpDir).findAny().isEmpty() || Files.list(tmpDir)) {
 //                Files.delete(tmpDir);
