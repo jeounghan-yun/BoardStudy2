@@ -9,8 +9,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @PropertySource("classpath:application.properties")
@@ -32,16 +34,12 @@ public class FileUtil {
     public List<String> tempFile(List<MultipartFile> files) throws IOException {
         List<String> fileNmList = new ArrayList<>();
 
-        File tmpDir = new File(tempDir);    // 파일타입
-//        Path tmpDir = Paths.get(tempDir);  // 파일경로타입
+        File tmpDir = new File(tempDir);     // 파일타입
 
         // 폴더가 존재하지 않으면 새로 생성
         if(!tmpDir.exists()){
             tmpDir.mkdirs();
         }
-//        if (!Files.exists(tmpDir)) {
-//            Files.createDirectories(tmpDir);
-//        }
 
         // 폴더가 존재하면 파일 삭제 후 폴더도 삭제
         File[] filesInDir = tmpDir.listFiles();
@@ -72,9 +70,10 @@ public class FileUtil {
      * @return
      * @throws IOException
      */
-    public Map<String, Object> uploadFile(Map<String, Object> map) throws IOException {
+    public String uploadFile(Map<String, Object> map) throws IOException {
+        String result = "SUCCESS";              // 성공 여부
         Path tmpDir   = Paths.get(tempDir);     // 임시 파일 폴더 경로
-        Path finalDir = Paths.get(uploadDir); // 최종 파일 폴더 경로
+        Path finalDir = Paths.get(uploadDir);   // 최종 파일 폴더 경로
 
         // 임시 폴더에 파일이 존재하는지 확인
         if (Files.exists(tmpDir) && Files.isDirectory(tmpDir)) {
@@ -91,15 +90,14 @@ public class FileUtil {
                     Files.move(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
                 }
             }
-
             // 임시 폴더가 비어 있으면 삭제
-            if (Files.list(tmpDir).findAny().isEmpty()) {
-                Files.delete(tmpDir);
-            }
+//            if (Files.list(tmpDir).findAny().isEmpty() || Files.list(tmpDir)) {
+//                Files.delete(tmpDir);
+//            }
         } else {
-            throw new IOException("임시 폴더가 존재하지 않거나 올바른 디렉토리가 아닙니다: " + tempDir);
+            result = "ERROR";
         }
 
-        return map;
+        return result;
     }
 }

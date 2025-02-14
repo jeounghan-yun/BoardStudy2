@@ -59,25 +59,31 @@ public class BoardServiceImpl implements BoardService{
                 map.put("fileYn", "Y");
                 resultBoardInt = boardDAO.InsertBoardData(map);
 
-                if(resultBoardInt == 1){
-                    // 게시물 seq를 file의 상위 번호로 넣어줌.
-                    map.put("mseq", map.get("seq"));
+                if(resultBoardInt != 1){                                // 게시물 저장 성공 여부
+                    result = fileUtil.uploadFile(map);                  // 임시폴더에서 -> 최종 업로드 폴더로 파일 이동 SUCCESS or ERROR 반환
 
-                    // 임시폴더에서 -> 최종 업로드 폴더로 파일 이동
-                    fileUtil.uploadFile(map);
+                    if("SUCCESS".equals(result)){
+                        map.put("mseq", map.get("seq"));                // 게시물 seq를 file의 상위 번호로 넣어줌.
 
-                    //파일 DB에 저장
-                    boardDAO.InsertFileData(map);
+//                        map.put
+                        map.put("flph", uploadDir);
+
+                        boardDAO.InsertFileData(map);                   // 파일 DB에 저장
+                    } else {
+                        result = "ERROR";
+                    }
+                } else {
+                    result = "ERROR";
                 }
             } else {
                 map.put("fileYn", "N");
-
                 resultBoardInt = boardDAO.InsertBoardData(map);
             }
 
-            if (resultBoardInt != 1) {
-                result = "ERROR";
+            if(resultBoardInt != 1){
+                result ="ERROR";
             }
+
         } catch (Exception e) {
             result = "ERROR";
         } finally{
@@ -139,41 +145,4 @@ public class BoardServiceImpl implements BoardService{
             return result;
         }
     }
-
-    /**
-     * 게시물 리스트
-     *
-     * @param map
-     * @return
-     */
-//    public List<Map<String, Object>> selectBoardList(Map<String, Object> map) throws Exception {
-//        List<Map<String, Object>> result = new ArrayList<>();
-//        String errCode = "SUCCESS";
-//
-//        String startDate = (String) map.get("startDate");
-//        String endDate   = (String) map.get("endDate");
-//
-//        // 프론트에서 날짜 데이터만 입력 가능하게 하여 체크 X
-//        map.put("startDate", startDate.replace("-", ""));
-//        map.put("endDate"  , endDate.replace("-", ""));
-//
-//        result = boardDAO.selectBoardList(map);  // 데이터 리스트
-//        Map<String,Object> item = result.get(0);
-//
-//        //result 0 인덱스에 dataList가 존재하는 확인
-//        if (item.containsKey("dataList")) {
-//            //dataList를 JSON 문자열로 변환
-//            String jsonStr = (String) item.get("dataList");
-//
-//            // jsonData를 JSON 문자열에서 List<Map>으로 변환
-//            List<Map<String, Object>> jsonDataMap = objectMapper.readValue(jsonStr, new TypeReference<List<Map<String, Object>>>() {});
-//
-//            // dataList를 변환된 값으로 교체
-//            item.put("dataList", jsonDataMap);
-//        } else {
-//            errCode = "noData";
-//            result.get(0).put("errCode", errCode);
-//        }
-//        return result;
-//    }
 }

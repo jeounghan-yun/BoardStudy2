@@ -3,9 +3,11 @@
 <script>
     var isSave;
     var url    = "";
+    // var files;
 
     $(document).ready(function () {
         $("#file").on('change', function () {
+            // files = $('#file')[0].files;
             fileTemp();
         })
 
@@ -28,7 +30,7 @@
                 $.ajax({
                       type : "POST"
                     , url  : url
-                    , data : $("#frmRegBoard").serialize() + "&SEQ=" + SEQ + "&file=" + $("#file").val()
+                    , data : $("#frmRegBoard").serialize() + "&SEQ=" + SEQ + "&file=" + "&files=" + files
                     , success : function (data) {
                         if("SUCCESS".equals(data.errCode)){
                             alert("저장 되었습니다.");
