@@ -3,11 +3,10 @@
 <script>
     var isSave;
     var url    = "";
-    // var files;
 
     $(document).ready(function () {
         $("#file").on('change', function () {
-            // files = $('#file')[0].files;
+            files = $('#file')[0].files;
             fileTemp();
         })
 
@@ -27,10 +26,21 @@
             }
 
             if(isSave === true){
+                var formData = new FormData($("#frmRegBoard")[0]); // form의 모든 데이터 가져오기
+                formData.append("SEQ", SEQ); // SEQ 값 추가
+
+                // 파일 추가
+                files = $("#file")[0].files;
+                for (let i = 0; i < files.length; i++) {
+                    formData.append("files", files[i]); // 여러 개의 파일을 배열 형태로 추가
+                }
+
                 $.ajax({
                       type : "POST"
                     , url  : url
-                    , data : $("#frmRegBoard").serialize() + "&SEQ=" + SEQ + "&file=" + "&files=" + files
+                    , data : formData
+                    , processData: false
+                    , contentType: false
                     , success : function (data) {
                         if("SUCCESS".equals(data.errCode)){
                             alert("저장 되었습니다.");

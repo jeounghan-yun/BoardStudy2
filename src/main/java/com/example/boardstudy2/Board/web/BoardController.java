@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import com.example.boardstudy2.Board.service.BoardService;
 import com.example.boardstudy2.Utils.CommandMap;
@@ -88,17 +89,11 @@ public class BoardController {
         return mv;
     }
 
-    /**
-     * 게시물 등록
-     * @param commandMap
-     * @param request
-     * @throws Exception
-     */
     @RequestMapping(value="/Board/BoardReg")
-    public ModelAndView InsertBoardData (CommandMap commandMap, HttpServletRequest request) throws Exception{
+    public ModelAndView InsertBoardData (CommandMap commandMap, @RequestParam("files") List<MultipartFile> files) throws Exception{
         ModelAndView mv = new ModelAndView("jsonView");
 
-        String errCode = boardService.InsertBoardData(commandMap.getMap(), request);
+        String errCode = boardService.InsertBoardData(commandMap.getMap(), files);
 
         mv.addObject("errCode", errCode);
 

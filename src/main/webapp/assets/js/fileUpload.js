@@ -1,22 +1,23 @@
-
+var files;
+var fileList;
 /**
  * 파일 임시 저장
  */
 fileTemp = function () {
-    var files = $('#file')[0].files;
-    var fileList = $('#fileList');
-    var formFile = new FormData;
+    files = $('#file')[0].files;
+    fileList = $('#fileList');
+    var formData = new FormData;
 
     fileList.empty(); // 기존 목록 초기화
 
     for (var i = 0; i < files.length; i++) {
-        formFile.append("files", files[i]);
+        formData.append("files", files[i]);
     }
 
     $.ajax({
         type : "POST"
         , url         : "/Board/AjaxTempFile"
-        , data        : formFile
+        , data        : formData
         , processData : false
         , contentType : false
         , success: function (data) {

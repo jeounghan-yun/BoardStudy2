@@ -42,11 +42,11 @@
     <!--게시물 등록-->
     <insert id="insertBoardData" parameterType="hashmap">
         <!--mapper.Board.insertBoardData : 게시물 등록-->
-        <selectKey keyProperty="seq" resultType="int" order="BEFORE">
+        <selectKey keyProperty="rseq" resultType="int" order="BEFORE">
             select coalesce(MAX(seq),0)+1 from ST_BOARD_MST
         </selectKey>
         insert into ST_BOARD_MST (SEQ   , TTL   , CNTS   , REG_ID   , REG_DATE                              , FILE_YN)
-                          values (#{seq}, #{ttl}, #{cnts}, #{userId}, date_format(sysdate(), '%Y%m%d%H%i%S'), #{fileYn})
+                          values (#{rseq}, #{ttl}, #{cnts}, #{userId}, date_format(sysdate(), '%Y%m%d%H%i%S'), #{fileYn})
     </insert>
 
     <!--게시물 파일 등록-->
@@ -56,7 +56,7 @@
             select coalesce(MAX(seq),0)+1 from ST_BOARD_FILE
         </selectKey>
         insert into ST_BOARD_FILE(SEQ   , MSEQ   , FILE_NM  , FILE_FLPH, REG_ID   , REG_DATE)
-                           values(#{seq}, #{mseq}, #{file}  , #{flph}  , #{userId}, date_format(sysdate(), '%Y%m%d%H%i%S')
+                           values(#{seq}, #{mseq}, #{file}  , #{flph}  , #{userId}, date_format(sysdate(), '%Y%m%d%H%i%S'))
     </insert>
 
     <!--게시물 상세-->

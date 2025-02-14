@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.example.boardstudy2.Board.dao.BoardDAO;
 import com.example.boardstudy2.common.Common;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -46,44 +48,38 @@ public class BoardServiceImpl implements BoardService{
      * @param map
      * @throws Exception
      */
-    public String InsertBoardData(Map<String, Object> map, HttpServletRequest request) throws Exception {
+    public String InsertBoardData(Map<String, Object> map, @RequestParam("files") List<MultipartFile> files) throws Exception {
         String result = "SUCCESS";
-        int resultBoardInt; // 게시판 글 성공 여부
-        int resultFileInt;  // 게시물 파일 등록 성공 여부
+//        int resultBoardInt; // 게시판 글 성공 여부
+//        int resultFileInt;  // 게시물 파일 등록 성공 여부
 
         try {
-            String fileNm = (String) map.get("file");
+//            String fileNm = (String) map.get("files");
 
             // 파일 존재 확인
-            if(!Common.isEmpty(fileNm)){
+            if(files.size() > 0){
                 map.put("fileYn", "Y");
-                resultBoardInt = boardDAO.InsertBoardData(map);
+                boardDAO.InsertBoardData(map);
 
-                if(resultBoardInt != 1){                                // 게시물 저장 성공 여부
-                    result = fileUtil.uploadFile(map);                  // 임시폴더에서 -> 최종 업로드 폴더로 파일 이동 SUCCESS or ERROR 반환
+                result = fileUtil.uploadFile(map);                  // 임시폴더에서 -> 최종 업로드 폴더로 파일 이동 SUCCESS or ERROR 반환
 
-                    if("SUCCESS".equals(result)){
-                        map.put("mseq", map.get("seq"));                // 게시물 seq를 file의 상위 번호로 넣어줌.
+                if("SUCCESS".equals(result)){
+                    map.put("mseq", map.get("rseq"));                // 게시물 seq를 file의 상위 번호로 넣어줌.
+                    map.put("flph", uploadDir);
 
-//                        map.put
-                        map.put("flph", uploadDir);
-
-                        boardDAO.InsertFileData(map);                   // 파일 DB에 저장
-                    } else {
-                        result = "ERROR";
+                    for (MultipartFile file : files) {
+                        if (!file.isEmpty()) {
+                            map.put("file", file.getOriginalFilename());
+                            boardDAO.InsertFileData(map);           // 파일 DB에 저장
+                        }
                     }
                 } else {
                     result = "ERROR";
                 }
             } else {
                 map.put("fileYn", "N");
-                resultBoardInt = boardDAO.InsertBoardData(map);
+                boardDAO.InsertBoardData(map);
             }
-
-            if(resultBoardInt != 1){
-                result ="ERROR";
-            }
-
         } catch (Exception e) {
             result = "ERROR";
         } finally{
