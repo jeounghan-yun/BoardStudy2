@@ -103,12 +103,16 @@ a:hover {
 }
 
 .board_list .title {
-    width: 60%;
+    width: 54%;
     text-align: left;
 }
 
 .board_list .top .title {
     text-align: center;
+}
+
+.board_list .fileYn {
+    width: 6%;
 }
 
 .board_list .writer {
@@ -699,6 +703,13 @@ button[class*="btn"] {border: 0;}
 .btn-gradient.purple:active {background: #BD8EB7;}
 .btn-gradient.yellow:active {background: #DBC05B;}
 .btn-gradient.green:active  {background: #72B08E;}
+
+/*.fileImages {*/
+/*    width: 1px;  !* 너비 조정 *!*/
+/*    height: 1px; !* 높이 조정 *!*/
+/*    !*object-fit: cover; !* 이미지 비율 유지하면서 잘림 방지 *!*!*/
+/*}*/
+
 
 
 

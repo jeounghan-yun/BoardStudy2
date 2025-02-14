@@ -31,6 +31,7 @@
              , REG_ID                                        regId
              , TO_CHAR(SUBSTR(REG_DATE, 1, 8), 'YYYY-MM-DD') regDate
              , COUNT(*) OVER()                               totalCount
+             , FILE_YN                                       fileYn
           from ST_BOARD_MST
          where 1=1
            <include refid="srchBoard"/>

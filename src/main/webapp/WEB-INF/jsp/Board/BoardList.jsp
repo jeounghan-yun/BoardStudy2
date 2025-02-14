@@ -31,6 +31,7 @@
             , url     : "/Board/BoardList"
             , data    : $("#frmSrchBoard").serialize() + "&page=" + page
             , success : function (data) {
+                console.log(data);
                 var data = data.list;
 
                 listCnt = $("#pagingListCount").val();
@@ -49,12 +50,18 @@
                 $.each(data, function(k, v){
                     str +=   "<div class='num'>"                                                                                               + numCount  +"</div>";
                     str +=   "<div class='title'><a onClick='BoardViewPage("+ v.seq +", \"" + v.regId + "\", "+ page + ", "+ numCount + ");'>" + v.ttl     +"</a></div>";
+                    if('Y'.equals(v.fileYn)){
+                        str +=   "<div class='fileYn'>Y</div>";
+                    } else {
+                        str +=   "<div class='fileYn'>N</div>";
+                    }
                     str +=   "<div class='writer'>"                                                                                            + v.regId   +"</div>";
                     str +=   "<div class='date'>"                                                                                              + v.regDate +"</div>";
                     str +=   "<div class='count'>"                                                                                             + v.readCnt +"</div>";
 
                     numCount--;
                 });
+
                 $("#resultTable").html(str);
             }
         })
@@ -105,6 +112,7 @@
             <div class="top">
                 <div class="num">    번호</div>
                 <div class="title">  제목</div>
+                <div class="fileYn">첨부파일</div>
                 <div class="writer"> 등록자</div>
                 <div class="date">   등록일</div>
                 <div class="count">  조회수</div>
