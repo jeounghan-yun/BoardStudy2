@@ -89,11 +89,17 @@ public class BoardController {
         return mv;
     }
 
+    /**
+     * 게시물 등록
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value="/Board/BoardReg")
-    public ModelAndView InsertBoardData (CommandMap commandMap, @RequestParam("files") List<MultipartFile> files) throws Exception{
+    public ModelAndView InsertBoardData (CommandMap commandMap) throws Exception{
         ModelAndView mv = new ModelAndView("jsonView");
 
-        String errCode = boardService.InsertBoardData(commandMap.getMap(), files);
+        String errCode = boardService.InsertBoardData(commandMap.getMap());
 
         mv.addObject("errCode", errCode);
 

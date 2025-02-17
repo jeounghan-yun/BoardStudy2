@@ -26,7 +26,7 @@ public class FileUploadController {
     public List<String> fileUpload(@RequestParam("files") List<MultipartFile> files) throws IOException {
         List<String> list = new ArrayList<>();
 
-        list = flieUtil.tempFile(files);
+        list = flieUtil.TempFile(files);
         return list; // 업로드된 파일 이름 목록 반환
     }
 }

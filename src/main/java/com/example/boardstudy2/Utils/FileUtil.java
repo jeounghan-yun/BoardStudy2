@@ -1,5 +1,6 @@
 package com.example.boardstudy2.Utils;
 
+import com.example.boardstudy2.common.Common;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class FileUtil {
      * @return
      * @throws IOException
      */
-    public List<String> tempFile(List<MultipartFile> files) throws IOException {
+    public List<String> TempFile(List<MultipartFile> files) throws IOException {
         List<String> fileNmList = new ArrayList<>();
 
         File tmpDir = new File(tempDir);     // 파일타입
@@ -39,15 +40,9 @@ public class FileUtil {
             tmpDir.mkdirs();
         }
 
-        // 폴더가 존재하면 파일 삭제 후 폴더도 삭제
+        // 폴더가 존재하면 파일 삭제
         File[] filesInDir = tmpDir.listFiles();
-        if (filesInDir != null) {
-            for (File f : filesInDir) {         // 폴더 내 파일 삭제
-                if (f.exists() && f.isFile()) { // 파일 존재 여부 확인
-                    f.delete();                 // 파일 삭제
-                }
-            }
-        }
+        Common.fileDel(filesInDir);
 
         // 파일 저장 및 파일 상태 검증
         for (MultipartFile file : files) {
@@ -64,15 +59,18 @@ public class FileUtil {
     /**
      * 업로드 파일 저장
      * 임시폴더에서 -> 최종 업로드 폴더로 파일 이동
+     *
+     * 추가해야됌 취소 및 브라우저 창 껐을 시 임시폴더 파일 삭제
      * @param map
      * @return
      * @throws IOException
      */
-    public String uploadFile(Map<String, Object> map) throws IOException {
-        String result = "SUCCESS";              // 성공 여부
-        String userId = (String) map.get("userId");
-        Path tmpDir   = Paths.get(tempDir);     // 임시 파일 폴더 경로
-        Path finalDir = Paths.get(uploadDir, userId);   // 최종 파일 폴더 경로
+    public List<String> UploadFile(Map<String, Object> map) throws IOException {
+        String result = "SUCCESS";                    // 성공 여부
+        String userId = (String) map.get("userId");   // 등록자ID
+        Path tmpDir   = Paths.get(tempDir);           // 임시 파일 폴더 경로
+        Path finalDir = Paths.get(uploadDir, userId); // 최종 파일 폴더 경로
+        List<String> fileNames = new ArrayList<>();   // 파일명 리스트
 
         // 임시 폴더에 파일이 존재하는지 확인
         if (Files.exists(tmpDir) && Files.isDirectory(tmpDir)) {
@@ -84,12 +82,15 @@ public class FileUtil {
             // 임시 폴더의 모든 파일 이동
             DirectoryStream<Path> directoryStream = Files.newDirectoryStream(tmpDir);
             for (Path filePath : directoryStream) {
+                // 파일명 가져오기 (파일명만 추가)
                 if (Files.isRegularFile(filePath)) { // 파일인지 확인
                     Path targetPath = finalDir.resolve(filePath.getFileName()); // 최종 경로 설정
                     Files.move(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+
+                    // 파일명 가져오기 (파일명만 추가)
+                    fileNames.add(filePath.getFileName().toString());
                 }
             }
-
             // 임시 폴더가 비어 있으면 삭제
 //            if (Files.list(tmpDir).findAny().isEmpty() || Files.list(tmpDir)) {
 //                Files.delete(tmpDir);
@@ -98,6 +99,7 @@ public class FileUtil {
             result = "ERROR";
         }
 
-        return result;
+        map.put("result", result);
+        return fileNames;
     }
 }

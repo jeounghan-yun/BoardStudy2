@@ -22,7 +22,7 @@ public interface BoardService {
      * @param map
      * @throws Exception
      */
-    String InsertBoardData(Map<String, Object> map, @RequestParam("files") List<MultipartFile> files) throws Exception;
+    String InsertBoardData(Map<String, Object> map) throws Exception;
 
     /**
      * 게시물 상세 데이터

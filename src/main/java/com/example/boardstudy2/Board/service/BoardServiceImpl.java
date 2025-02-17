@@ -10,6 +10,7 @@ import com.example.boardstudy2.common.Common;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,9 @@ public class BoardServiceImpl implements BoardService{
 
     @Value("${part4.upload.path}")
     private String uploadDir;
+
+    @Value("${spring.servlet.multipart.location}")
+    private String tempDir;
 
     /**
      * 게시물 리스트
@@ -48,31 +52,29 @@ public class BoardServiceImpl implements BoardService{
      * @param map
      * @throws Exception
      */
-    public String InsertBoardData(Map<String, Object> map, @RequestParam("files") List<MultipartFile> files) throws Exception {
+    public String InsertBoardData(Map<String, Object> map) throws Exception {
         String result = "SUCCESS";
         String userId = (String) map.get("userId");
+        List<String> fileNames = new ArrayList<>(); // 파일명 리스트
 //        int resultBoardInt; // 게시판 글 성공 여부
 //        int resultFileInt;  // 게시물 파일 등록 성공 여부
 
         try {
             // 파일 존재 확인
-            if(files.size() > 0){
+            if(Common.FileCheck(tempDir)){
                 map.put("fileYn", "Y");
                 boardDAO.InsertBoardData(map);
 
-                result = fileUtil.uploadFile(map);                  // 임시폴더에서 -> 최종 업로드 폴더로 파일 이동 SUCCESS or ERROR 반환
+                fileNames = fileUtil.UploadFile(map);                  // 임시폴더에서 -> 최종 업로드 폴더로 파일 이동 SUCCESS or ERROR 반환
 
-                if("SUCCESS".equals(result)){
-                    map.put("mseq", map.get("rseq"));                // 게시물 seq를 file의 상위 번호로 넣어줌.
+                if(fileNames.size() > 0){
+                    map.put("mseq", map.get("rseq"));                  // 게시물 seq를 file의 상위 번호로 넣어줌.
                     map.put("flph", uploadDir + userId + "/");
 
-                    for (MultipartFile file : files) {
-                        if (!file.isEmpty()) {
-                            map.put("file", file.getOriginalFilename());
-                            boardDAO.InsertFileData(map);           // 파일 DB에 저장
-                        }
+                    for(int i = 0 ; i < fileNames.size() ; i++) {
+                        map.put("file", fileNames.get(i));
+                        boardDAO.InsertFileData(map);              // 파일 DB에 저장
                     }
-
                 } else {
                     result = "ERROR";
                 }
