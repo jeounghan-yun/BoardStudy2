@@ -88,12 +88,21 @@ public class FileUtil {
             for (Path filePath : directoryStream) {
                 // 파일명 가져오기 (파일명만 추가)
                 if (Files.isRegularFile(filePath)) { // 파일인지 확인
-                    Path targetPath = finalDir.resolve(filePath.getFileName()); // 최종 경로 설정
+                    String originalFileName = filePath.getFileName().toString();  // 원본 파일명
+
+                    // 확장자와 파일명 분리 (UUID를 파일명에 추가)
+                    String fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
+
+                    String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+
+                    // UUID를 파일명에 추가
+                    String uniqueFileName = uuid + fileExtension;
+
+                    Path targetPath = finalDir.resolve(uniqueFileName);
                     Files.move(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
 
-                    // 파일명 가져오기 (파일명만 추가)
+                    uniqueFileNames.add(uuid);
                     originalFileNames.add(filePath.getFileName().toString());
-                    uniqueFileNames.add(UUID.randomUUID().toString().replaceAll("-", ""));
                 }
             }
             // 임시 폴더가 비어 있으면 삭제
@@ -103,8 +112,6 @@ public class FileUtil {
         } else {
             result = "ERROR";
         }
-
-//        map.put("result", result);
         map.put("result", result);
         map.put("originalFileNames", originalFileNames);
         map.put("uniqueFileNames", uniqueFileNames);

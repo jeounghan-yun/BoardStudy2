@@ -71,7 +71,8 @@
              , SUBSTR(a.REG_DATE, 1, 8) regDate
              , a.FILE_YN                fileYn
              , b.FILE_FLPH              fileFlph
-             , b.ORIGIN_FILE_NM         fileNm
+             , b.ORIGIN_FILE_NM         originFileNm
+             , b.UNIQUE_FILE_NM         uniFileNm
           from ST_BOARD_MST a
           left join ST_BOARD_FILE b
                  on a.SEQ = b.MSEQ

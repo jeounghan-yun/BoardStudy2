@@ -67,22 +67,23 @@ public class BoardServiceImpl implements BoardService{
                 boardDAO.InsertBoardData(map);
 
                 fileUtil.UploadFile(map);
-                originalFileNames = (List<String>) map.get("originalFileNames");
-                uniqueFileNames   = (List<String>) map.get("uniqueFileNames");
-//                originalFileNames = fileUtil.UploadFile(map);                  // 임시폴더에서 -> 최종 업로드 폴더로 파일 이동 SUCCESS or ERROR 반환
-//                uniqueFileNames    = fileUtil.UniqeFile(map);
+                if("SUCCESS".equals(map.get("result"))){
+                    originalFileNames = (List<String>) map.get("originalFileNames");
+                    uniqueFileNames   = (List<String>) map.get("uniqueFileNames");
 
-                int mseq = (Integer) map.get("rseq");
+                    int mseq = (Integer) map.get("rseq");
 
-                if(originalFileNames.size() > 0){
-                    map.put("mseq", mseq);                  // 게시물 seq를 file의 상위 번호로 넣어줌.
-//                    map.put("flph", uploadDir + userId + "/");
-                    map.put("flph", userId + "/" + mseq + "/");
+                    if(originalFileNames.size() > 0){
+                        map.put("mseq", mseq);                  // 게시물 seq를 file의 상위 번호로 넣어줌.
+                        map.put("flph", userId + "/" + mseq + "/");
 
-                    for(int i = 0 ; i < originalFileNames.size() ; i++) {
-                        map.put("originalFileNames", originalFileNames.get(i));
-                        map.put("uniqueFileNames"  , uniqueFileNames.get(i));
-                        boardDAO.InsertFileData(map);              // 파일 DB에 저장
+                        for(int i = 0 ; i < originalFileNames.size() ; i++) {
+                            map.put("originalFileNames", originalFileNames.get(i));
+                            map.put("uniqueFileNames"  , uniqueFileNames.get(i));
+                            boardDAO.InsertFileData(map);              // 파일 DB에 저장
+                        }
+                    } else {
+                        result = "ERROR";
                     }
                 } else {
                     result = "ERROR";
