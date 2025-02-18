@@ -67,14 +67,14 @@ public class FileUtil {
      * @throws IOException
      */
     public Map<String, Object> UploadFile(Map<String, Object> map) throws IOException {
-        String result                  = "SUCCESS";                    // 성공 여부
-        String userId                  = (String) map.get("userId");   // 등록자ID
-        int seq                        = (Integer) map.get("rseq");
-        String finalFolderNm           = userId + "/" + seq;
+        String result                  = "SUCCESS";                           // 성공 여부
+        String userId                  = (String) map.get("userId");          // 등록자ID
+        int seq                        = (Integer) map.get("rseq");           // 시퀀스
+        String finalFolderNm           = userId + "/" + seq;                  // 폴더 경로
         Path tmpDir                    = Paths.get(tempDir);                  // 임시 파일 폴더 경로
         Path finalDir                  = Paths.get(uploadDir, finalFolderNm); // 최종 파일 폴더 경로
-        List<String> originalFileNames = new ArrayList<>();  // 원본파일명 리스트
-        List<String>  uniqueFileNames  = new ArrayList<>();  // 원본파일명 리스트
+        List<String> originalFileNames = new ArrayList<>();                   // 원본파일명 리스트
+        List<String> uniqueFileNames   = new ArrayList<>();                   // 원본파일명 리스트
 
         // 임시 폴더에 파일이 존재하는지 확인
         if (Files.exists(tmpDir) && Files.isDirectory(tmpDir)) {
@@ -90,12 +90,12 @@ public class FileUtil {
                 if (Files.isRegularFile(filePath)) { // 파일인지 확인
                     String originalFileName = filePath.getFileName().toString();  // 원본 파일명
 
-                    // 확장자와 파일명 분리 (UUID를 파일명에 추가)
+                    // 확장자와 파일명 분리
                     String fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
 
                     String uuid = UUID.randomUUID().toString().replaceAll("-", "");
 
-                    // UUID를 파일명에 추가
+                    // 확장자를 uuid에 추가
                     String uniqueFileName = uuid + fileExtension;
 
                     Path targetPath = finalDir.resolve(uniqueFileName);
@@ -118,7 +118,25 @@ public class FileUtil {
         return map;
     }
 
+    /**
+     * 첨부파일 삭제
+     * @param map
+     * @return
+     * @throws IOException
+     */
+    public void FileDelete(Map<String, Object> map) throws IOException {
+        String userId   = (String) map.get("regId");
+        String seq      = (String) map.get("SEQ");
+        String filePath = userId + "/" + seq + "/";
+        Path finalDir   = Paths.get(uploadDir + filePath);
 
+        // 파일 삭제
+        if(finalDir.toFile().exists()){
+            Common.fileDel(finalDir.toFile().listFiles());
+            // 폴더 삭제
+
+        }
+    }
 
     /**
      * 임시 파일 취소 및 브라우즈 닫기

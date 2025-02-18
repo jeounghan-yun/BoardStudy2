@@ -31,13 +31,3 @@ fileTemp = function () {
         }
     })
 }
-
-// window.addEventListener("beforeunload", function (event) {
-//     $.ajax({
-//           type    : "POST"
-//         , url     : "/Board/Cancel"
-//         , success : function (data) {
-//         }
-//     })
-//
-// })

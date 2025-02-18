@@ -51,12 +51,20 @@ public class FileUploadController {
         return list; // 업로드된 파일 이름 목록 반환
     }
 
+    /**
+     * 파일 다운로드
+     * @param filePath
+     * @param uuid
+     * @param originFileName
+     * @return
+     * @throws MalformedURLException
+     */
     @GetMapping("/download")
     public ResponseEntity<Resource> downloadFile(@RequestParam String filePath, @RequestParam String uuid, @RequestParam String originFileName) throws MalformedURLException {
-        String fileExtension = originFileName.substring(originFileName.lastIndexOf('.'));
+        String fileExtension = originFileName.substring(originFileName.lastIndexOf('.')); // 확장자 추출
 
-        String filePaths = filePath + uuid + fileExtension;
-        Path path = Paths.get(uploadDir, filePaths);
+        String filePaths = filePath + uuid + fileExtension;                                   // 경로 합치기
+        Path path = Paths.get(uploadDir, filePaths);                                          // 실제 경로 Path타입으로 변경
         Resource resource = new UrlResource(path.toUri());
 
         return ResponseEntity.ok()

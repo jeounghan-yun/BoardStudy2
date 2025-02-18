@@ -61,6 +61,15 @@ public class Common {
         }
     }
 
+
+    /**
+     * 파일 삭제 폴더까지 삭제
+     * @param filesInDir
+     */
+    public static void fileDelFolder (File[] filesInDir) {
+
+    }
+
     /**
      * 특정 파일만 삭제
      */

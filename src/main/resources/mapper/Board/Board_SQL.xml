@@ -113,42 +113,4 @@
          where 1=1
            and SEQ = #{SEQ}
     </update>
-
-
-    <!--게시물 리스트-->
-    <!--    <select id="selectBoardList" parameterType="hashmap" resultType="hashmap">-->
-    <!--        &lt;!&ndash;mapper.board.selectBoardList : 게시물 리스트&ndash;&gt;-->
-    <!--        select (-->
-    <!--                select JSON_ARRAYAGG(-->
-    <!--                                      JSON_OBJECT(-->
-    <!--                                                  'seq'    , SEQ,-->
-    <!--                                                  'ttl'    , TTL,-->
-    <!--                                                  'cnts'   , CNTS,-->
-    <!--                                                  'readCnt', READ_CNT,-->
-    <!--                                                  'regId'  , REG_ID,-->
-    <!--                                                  'regDate', TO_CHAR(SUBSTR(REG_DATE, 1, 8), 'YYYY-MM-DD')-->
-    <!--                                                 )-->
-    <!--                                    )-->
-    <!--                  from (SELECT SEQ-->
-    <!--                             , TTL-->
-    <!--                             , CNTS-->
-    <!--                             , READ_CNT-->
-    <!--                             , REG_ID-->
-    <!--                             , REG_DATE-->
-    <!--                          from ST_BOARD_MST-->
-    <!--                         where 1=1-->
-    <!--                           <include refid="srchBoard"/>-->
-    <!--                           and DEL_ID is null-->
-    <!--                         order by SEQ desc-->
-    <!--                           <include refid="common.paging"/>-->
-    <!--                       ) as dataList-->
-    <!--               ) AS dataList-->
-    <!--             , (select COUNT(*)-->
-    <!--                  from ST_BOARD_MST-->
-    <!--                 where 1=1-->
-    <!--                   and DEL_ID is null-->
-    <!--                   <include refid="srchBoard"/>-->
-    <!--               ) as totalCount;-->
-    <!--    </select>-->
-
 </mapper>

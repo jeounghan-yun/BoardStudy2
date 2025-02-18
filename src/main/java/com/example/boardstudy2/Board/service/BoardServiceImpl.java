@@ -56,7 +56,7 @@ public class BoardServiceImpl implements BoardService{
         String result = "SUCCESS";
         String userId = (String) map.get("userId");
         List<String> originalFileNames = new ArrayList<>(); // 오리지날 파일명 리스트
-        List<String> uniqueFileNames = new ArrayList<>(); // 유니크 파일명 리스트
+        List<String> uniqueFileNames   = new ArrayList<>(); // 유니크 파일명 리스트
 //        int resultBoardInt; // 게시판 글 성공 여부
 //        int resultFileInt;  // 게시물 파일 등록 성공 여부
 
@@ -125,9 +125,8 @@ public class BoardServiceImpl implements BoardService{
             if(Common.isEmpty(map.get("SEQ")) || resultInt < 1){ // SEQ를 먼저 체크하고 삭제 로직으로 들어간다.
                 result = "ERROR";
             } else {
-
+                fileUtil.FileDelete(map);
             }
-
         } catch (Exception e) {
             result = "ERROR";
         } finally {

@@ -73,39 +73,4 @@ public class BoardDAO  extends CommonMapper {
     public int BoardEditData(Map<String, Object> map) throws Exception {
         return (int) update("mapper.board.boardEditData", map);
     }
-
-    /**
-     * 게시물 리스트
-     * @param map
-     * @return
-     * @throws Exception
-     */
-//    public Map<String, Object> selectBoardList(Map<String, Object> map) throws Exception {
-//        Map<String, Object> result = (Map<String, Object>) selectPagingList("mapper.board.selectBoardList", map);
-//
-//        String dataListJson = (Map<String, Object>) result.get("dataList");
-//        int totalCount = (int) result.get("totalCount");
-//
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        List<Map<String, Object>> dataList = objectMapper.readValue(dataListJson, new TypeReference<List<Map<String, Object>>>() {});
-//
-//        List<Map<String, Object>> list = new ArrayList<>();
-//        list.addAll(dataList);
-//
-//        Map<String, Object> totalCountMap = new HashMap<>();
-//        totalCountMap.put("totalCount", totalCount);
-//        list.add(totalCountMap);
-//
-//        return list;
-//    }
-
-    /**
-     * 게시물 개수
-     * @return
-     * @throws Exception
-     */
-//    public int selectBoardCount(Map<String, Object> map) throws Exception {
-//        return (int) selectOne("mapper.board.selectBoardCount", map);
-//    }
-
 }

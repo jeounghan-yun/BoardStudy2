@@ -49,18 +49,6 @@
             searchYn = "N";
         }
 
-        // // endDate만 있을 경우
-        // if(isNull($("#startDate").val()) && !isNull($("#endDate").val())){
-        //     alert("시작일이 비었습니다.");
-        //     searchYn = "N";
-        // }
-        //
-        // // startDate만 있을 경우
-        // if(!isNull($("#startDate").val()) && isNull($("#endDate").val())){
-        //     alert("종료일이 비었습니다.");
-        //     searchYn = "N";
-        // }
-
         if("Y".equals(searchYn)) {
             srchTitle       = $("#srchTitle").val();
             srchReg         = $("#srchReg").val();
