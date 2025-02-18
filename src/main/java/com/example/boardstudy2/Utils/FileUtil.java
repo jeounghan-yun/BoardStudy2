@@ -68,9 +68,11 @@ public class FileUtil {
     public List<String> UploadFile(Map<String, Object> map) throws IOException {
         String result = "SUCCESS";                    // 성공 여부
         String userId = (String) map.get("userId");   // 등록자ID
-        Path tmpDir   = Paths.get(tempDir);           // 임시 파일 폴더 경로
-        Path finalDir = Paths.get(uploadDir, userId); // 최종 파일 폴더 경로
-        List<String> fileNames = new ArrayList<>();   // 파일명 리스트
+        int seq       = (Integer) map.get("rseq");
+        String finalFolderNm = userId + "/" + seq;
+        Path tmpDir   = Paths.get(tempDir);                  // 임시 파일 폴더 경로
+        Path finalDir = Paths.get(uploadDir, finalFolderNm); // 최종 파일 폴더 경로
+        List<String> fileNames = new ArrayList<>();          // 파일명 리스트
 
         // 임시 폴더에 파일이 존재하는지 확인
         if (Files.exists(tmpDir) && Files.isDirectory(tmpDir)) {
@@ -102,4 +104,15 @@ public class FileUtil {
         map.put("result", result);
         return fileNames;
     }
+
+    /**
+     * 임시 파일 취소 및 브라우즈 닫기
+     */
+//    public void fileDel(){
+//        File tmpDir = new File(tempDir);     // 파일타입
+//
+//        // 폴더가 존재하면 파일 삭제
+//        File[] filesInDir = tmpDir.listFiles();
+//        Common.fileDel(filesInDir);
+//    }
 }

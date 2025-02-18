@@ -43,6 +43,9 @@
         })
     })
 
+    /**
+     * 수정 시 상세 데이터
+     */
     getViewData = function () {
         $.ajax({
               type : "POST"
@@ -89,7 +92,7 @@
                 </div>
                 <div class="file">
                     <input type="file" id="file" name="file" class="file-input" multiple="multiple"/>
-                    <ul style="font-size: 15px" id="fileList"></ul>
+                    <div class="fileBox" id="fileList"></div>
                 </div>
             </div>
         </form>

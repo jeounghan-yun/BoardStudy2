@@ -1,6 +1,7 @@
 package com.example.boardstudy2.common;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,14 +32,23 @@ public class Common {
     public static boolean FileCheck (String tempDir) {
         Path tmpDir   = Paths.get(tempDir);           // 임시 파일 폴더 경로
 
-        if(Files.exists(tmpDir) && Files.isDirectory(tmpDir)) {
-            return true;
+
+        if (Files.exists(tmpDir) && Files.isDirectory(tmpDir)) {
+            try {
+                boolean hasFiles = Files.list(tmpDir).findAny().isPresent(); // 파일이 하나라도 있으면 true 반환
+                if(hasFiles) {
+                    return true;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace(); // 예외 발생 시 오류 출력
+            }
         }
         return false;
     }
 
     /**
-     * 파일 삭제
+     * 파일 삭제 전부 삭제
      * @param filesInDir
      */
     public static void fileDel (File[] filesInDir) {
@@ -50,6 +60,13 @@ public class Common {
             }
         }
     }
+
+    /**
+     * 특정 파일만 삭제
+     */
+//    public static void fileDelOne () {
+//
+//    }
 
 }
 

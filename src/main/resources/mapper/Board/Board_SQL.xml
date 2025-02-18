@@ -56,22 +56,27 @@
         <selectKey keyProperty="seq" resultType="int" order="BEFORE">
             select coalesce(MAX(seq),0)+1 from ST_BOARD_FILE
         </selectKey>
-        insert into ST_BOARD_FILE(SEQ   , MSEQ   , FILE_NM  , FILE_FLPH, REG_ID   , REG_DATE)
-                           values(#{seq}, #{mseq}, #{file}  , #{flph}  , #{userId}, date_format(sysdate(), '%Y%m%d%H%i%S'))
+        insert into ST_BOARD_FILE(SEQ   , MSEQ   , ORIGIN_FILE_NM, FILE_FLPH, REG_ID   , REG_DATE)
+                           values(#{seq}, #{mseq}, #{file}       , #{flph}  , #{userId}, date_format(sysdate(), '%Y%m%d%H%i%S'))
     </insert>
 
     <!--게시물 상세-->
     <select id="boardDetailData" parameterType="hashmap" resultType="hashmap">
         <!--mapper.Board.BoardDetailData : 게시물 상세-->
-        select SEQ                    seq
-             , TTL                    ttl
-             , CNTS                   cnts
-             , READ_CNT               readCnt
-             , REG_ID                 regId
-             , SUBSTR(REG_DATE, 1, 8) regDate
-          from ST_BOARD_MST
+        select a.SEQ                    seq
+             , a.TTL                    ttl
+             , a.CNTS                   cnts
+             , a.READ_CNT               readCnt
+             , a.REG_ID                 regId
+             , SUBSTR(a.REG_DATE, 1, 8) regDate
+             , a.FILE_YN                fileYn
+             , b.FILE_FLPH              fileFlph
+             , b.ORIGIN_FILE_NM         fileNm
+          from ST_BOARD_MST a
+          left join ST_BOARD_FILE b
+                 on a.SEQ = b.MSEQ
          where 1=1
-           and SEQ = #{SEQ}
+           and a.SEQ  = #{SEQ}
     </select>
 
     <!--게시물 조회수 업데이트-->
@@ -85,12 +90,15 @@
 
     <!--게시물 삭제-->
     <update id="boardDelData" parameterType="hashmap">
-        <!--mapper.Board.BoardDelData : 게시물 삭제-->
-        update ST_BOARD_MST
-           set DEL_ID   = 'Admin'
-             , DEL_DATE = DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%S')
-         where 1=1
-           and SEQ = #{SEQ}
+        update ST_BOARD_MST a
+          left join ST_BOARD_FILE b
+                 on a.SEQ = b.MSEQ
+           set a.DEL_ID   = 'ADMIN'
+             , a.DEL_DATE = date_format(sysdate(), '%Y%m%d%H%i%S')
+             , b.DEL_ID   = 'ADMIN'
+             , b.DEL_DATE = date_format(sysdate(), '%Y%m%d%H%i%S')
+             , a.FILE_YN  = 'N'
+         where a.SEQ = #{SEQ};
     </update>
 
     <!--게시물 수정-->

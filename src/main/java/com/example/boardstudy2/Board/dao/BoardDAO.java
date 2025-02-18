@@ -43,8 +43,8 @@ public class BoardDAO  extends CommonMapper {
      * @return
      * @throws Exception
      */
-    public Map<String, Object> BoardDetailData(Map<String, Object> map) throws Exception {
-        return (Map<String, Object>) selectOne("mapper.board.boardDetailData", map);
+    public List<Map<String, Object>> BoardDetailData(Map<String, Object> map) throws Exception {
+        return (List<Map<String, Object>>) selectList("mapper.board.boardDetailData", map);
     }
 
     /**

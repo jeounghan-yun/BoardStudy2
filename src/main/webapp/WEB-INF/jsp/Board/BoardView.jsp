@@ -15,14 +15,30 @@
             , url  : "/Board/BoardDetail"
             , data : {SEQ : SEQ}
             , success : function (data) {
-                var data = data.DetailData
+                var data = data.DetailData;
+                console.log(data);
 
                 $("#seq").html(numCount);
-                $("#ttl").html(data.ttl);
-                $("#regId").html(data.regId);
-                $("#regDate").html(data.regDate);
-                $("#readCnt").html(data.readCnt);
-                $("#cnts").html(data.cnts);
+                $("#ttl").html(data[0].ttl);
+                $("#regId").html(data[0].regId);
+                $("#regDate").html(data[0].regDate);
+                $("#readCnt").html(data[0].readCnt);
+                $("#cnts").html(data[0].cnts);
+
+                var str = "";
+
+                $.each(data, function (k, v){
+                    if("Y".equals(v.fileYn)) {
+                        var filePath = v.fileFlph + v.fileNm
+                        console.log(filePath);
+                        str += "<div><a href='http://localhost:8080/download?filePath=" + filePath + "' download='" + v.fileNm + "'>" + v.fileNm + "</a></div>";
+
+                    } else {
+                        str += "<div>파일 없음.</div>"
+                    }
+                })
+
+                $("#fileBox").html(str);
             }
         })
     }
@@ -74,6 +90,10 @@
                 </dl>
             </div>
             <div class="cont" id="cnts"></div>
+            <div class="file">
+                <div class="fileBox" id="fileBox"></div>
+            </div>
+
         </div>
         <div class="bt_wrap">
             <a onClick="BoardListPage(page)" class="on">목록</a>

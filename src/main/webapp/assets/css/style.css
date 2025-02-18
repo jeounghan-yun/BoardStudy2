@@ -710,6 +710,17 @@ button[class*="btn"] {border: 0;}
 /*    !*object-fit: cover; !* 이미지 비율 유지하면서 잘림 방지 *!*!*/
 /*}*/
 
+.fileBox{
+    font-size: 15px;
+    border-bottom: 1px solid;
+    /*border-right: none;*/
+    /*border-left: none;*/
+    padding-top: 6px;
+    padding-bottom: 6px;
+    width: 500px;
+    height: auto;
+
+}
 
 
 

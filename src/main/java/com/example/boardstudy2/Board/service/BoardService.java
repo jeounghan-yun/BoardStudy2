@@ -30,7 +30,7 @@ public interface BoardService {
      * @return
      * @throws Exception
      */
-    Map<String, Object> BoardDetailData(Map<String, Object> map) throws Exception;
+    List<Map<String, Object>> BoardDetailData(Map<String, Object> map) throws Exception;
 
     /**
      * 게시물 삭제

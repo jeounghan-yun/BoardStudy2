@@ -20,7 +20,7 @@ fileTemp = function () {
         , data        : formData
         , processData : false
         , contentType : false
-        , success: function (data) {
+        , success     : function (data) {
             for (var i = 0; i < data.length; i++) {
                 fileList.append('<li>' + data[i] + '</li>');
             }
@@ -31,3 +31,13 @@ fileTemp = function () {
         }
     })
 }
+
+// window.addEventListener("beforeunload", function (event) {
+//     $.ajax({
+//           type    : "POST"
+//         , url     : "/Board/Cancel"
+//         , success : function (data) {
+//         }
+//     })
+//
+// })

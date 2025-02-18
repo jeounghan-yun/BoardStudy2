@@ -66,10 +66,12 @@ public class BoardServiceImpl implements BoardService{
                 boardDAO.InsertBoardData(map);
 
                 fileNames = fileUtil.UploadFile(map);                  // 임시폴더에서 -> 최종 업로드 폴더로 파일 이동 SUCCESS or ERROR 반환
+                int mseq = (Integer) map.get("rseq");
 
                 if(fileNames.size() > 0){
-                    map.put("mseq", map.get("rseq"));                  // 게시물 seq를 file의 상위 번호로 넣어줌.
-                    map.put("flph", uploadDir + userId + "/");
+                    map.put("mseq", mseq);                  // 게시물 seq를 file의 상위 번호로 넣어줌.
+//                    map.put("flph", uploadDir + userId + "/");
+                    map.put("flph", userId + "/" + mseq + "/");
 
                     for(int i = 0 ; i < fileNames.size() ; i++) {
                         map.put("file", fileNames.get(i));
@@ -95,7 +97,7 @@ public class BoardServiceImpl implements BoardService{
      * @return
      * @throws Exception
      */
-    public Map<String, Object> BoardDetailData(Map<String, Object> map) throws Exception {
+    public List<Map<String, Object>> BoardDetailData(Map<String, Object> map) throws Exception {
         boardDAO.BoardReadCnt(map);
         return boardDAO.BoardDetailData(map);
     }
@@ -112,9 +114,12 @@ public class BoardServiceImpl implements BoardService{
         try {
             int resultInt = boardDAO.BoardDelData(map);
 
-            if(Common.isEmpty(map.get("SEQ")) || resultInt != 1){ // SEQ를 먼저 체크하고 삭제 로직으로 들어간다.
+            if(Common.isEmpty(map.get("SEQ")) || resultInt < 1){ // SEQ를 먼저 체크하고 삭제 로직으로 들어간다.
                 result = "ERROR";
+            } else {
+
             }
+
         } catch (Exception e) {
             result = "ERROR";
         } finally {
