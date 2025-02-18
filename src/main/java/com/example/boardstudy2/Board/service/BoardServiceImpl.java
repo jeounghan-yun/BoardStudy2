@@ -55,7 +55,8 @@ public class BoardServiceImpl implements BoardService{
     public String InsertBoardData(Map<String, Object> map) throws Exception {
         String result = "SUCCESS";
         String userId = (String) map.get("userId");
-        List<String> fileNames = new ArrayList<>(); // 파일명 리스트
+        List<String> originalFileNames = new ArrayList<>(); // 오리지날 파일명 리스트
+        List<String> uniqueFileNames = new ArrayList<>(); // 유니크 파일명 리스트
 //        int resultBoardInt; // 게시판 글 성공 여부
 //        int resultFileInt;  // 게시물 파일 등록 성공 여부
 
@@ -65,16 +66,22 @@ public class BoardServiceImpl implements BoardService{
                 map.put("fileYn", "Y");
                 boardDAO.InsertBoardData(map);
 
-                fileNames = fileUtil.UploadFile(map);                  // 임시폴더에서 -> 최종 업로드 폴더로 파일 이동 SUCCESS or ERROR 반환
+                fileUtil.UploadFile(map);
+                originalFileNames = (List<String>) map.get("originalFileNames");
+                uniqueFileNames   = (List<String>) map.get("uniqueFileNames");
+//                originalFileNames = fileUtil.UploadFile(map);                  // 임시폴더에서 -> 최종 업로드 폴더로 파일 이동 SUCCESS or ERROR 반환
+//                uniqueFileNames    = fileUtil.UniqeFile(map);
+
                 int mseq = (Integer) map.get("rseq");
 
-                if(fileNames.size() > 0){
+                if(originalFileNames.size() > 0){
                     map.put("mseq", mseq);                  // 게시물 seq를 file의 상위 번호로 넣어줌.
 //                    map.put("flph", uploadDir + userId + "/");
                     map.put("flph", userId + "/" + mseq + "/");
 
-                    for(int i = 0 ; i < fileNames.size() ; i++) {
-                        map.put("file", fileNames.get(i));
+                    for(int i = 0 ; i < originalFileNames.size() ; i++) {
+                        map.put("originalFileNames", originalFileNames.get(i));
+                        map.put("uniqueFileNames"  , uniqueFileNames.get(i));
                         boardDAO.InsertFileData(map);              // 파일 DB에 저장
                     }
                 } else {

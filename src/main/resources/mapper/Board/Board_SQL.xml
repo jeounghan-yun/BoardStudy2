@@ -56,8 +56,8 @@
         <selectKey keyProperty="seq" resultType="int" order="BEFORE">
             select coalesce(MAX(seq),0)+1 from ST_BOARD_FILE
         </selectKey>
-        insert into ST_BOARD_FILE(SEQ   , MSEQ   , ORIGIN_FILE_NM, FILE_FLPH, REG_ID   , REG_DATE)
-                           values(#{seq}, #{mseq}, #{file}       , #{flph}  , #{userId}, date_format(sysdate(), '%Y%m%d%H%i%S'))
+        insert into ST_BOARD_FILE(SEQ   , MSEQ   , ORIGIN_FILE_NM      , UNIQUE_FILE_NM    , FILE_FLPH, REG_ID   , REG_DATE)
+                           values(#{seq}, #{mseq}, #{originalFileNames}, #{uniqueFileNames}, #{flph}  , #{userId}, date_format(sysdate(), '%Y%m%d%H%i%S'))
     </insert>
 
     <!--게시물 상세-->

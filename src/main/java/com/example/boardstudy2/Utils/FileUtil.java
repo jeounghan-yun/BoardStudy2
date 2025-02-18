@@ -12,6 +12,7 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Component
 @PropertySource("classpath:application.properties")
@@ -65,14 +66,15 @@ public class FileUtil {
      * @return
      * @throws IOException
      */
-    public List<String> UploadFile(Map<String, Object> map) throws IOException {
-        String result = "SUCCESS";                    // 성공 여부
-        String userId = (String) map.get("userId");   // 등록자ID
-        int seq       = (Integer) map.get("rseq");
-        String finalFolderNm = userId + "/" + seq;
-        Path tmpDir   = Paths.get(tempDir);                  // 임시 파일 폴더 경로
-        Path finalDir = Paths.get(uploadDir, finalFolderNm); // 최종 파일 폴더 경로
-        List<String> fileNames = new ArrayList<>();          // 파일명 리스트
+    public Map<String, Object> UploadFile(Map<String, Object> map) throws IOException {
+        String result                  = "SUCCESS";                    // 성공 여부
+        String userId                  = (String) map.get("userId");   // 등록자ID
+        int seq                        = (Integer) map.get("rseq");
+        String finalFolderNm           = userId + "/" + seq;
+        Path tmpDir                    = Paths.get(tempDir);                  // 임시 파일 폴더 경로
+        Path finalDir                  = Paths.get(uploadDir, finalFolderNm); // 최종 파일 폴더 경로
+        List<String> originalFileNames = new ArrayList<>();  // 원본파일명 리스트
+        List<String>  uniqueFileNames  = new ArrayList<>();  // 원본파일명 리스트
 
         // 임시 폴더에 파일이 존재하는지 확인
         if (Files.exists(tmpDir) && Files.isDirectory(tmpDir)) {
@@ -90,7 +92,8 @@ public class FileUtil {
                     Files.move(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
 
                     // 파일명 가져오기 (파일명만 추가)
-                    fileNames.add(filePath.getFileName().toString());
+                    originalFileNames.add(filePath.getFileName().toString());
+                    uniqueFileNames.add(UUID.randomUUID().toString().replaceAll("-", ""));
                 }
             }
             // 임시 폴더가 비어 있으면 삭제
@@ -101,9 +104,14 @@ public class FileUtil {
             result = "ERROR";
         }
 
+//        map.put("result", result);
         map.put("result", result);
-        return fileNames;
+        map.put("originalFileNames", originalFileNames);
+        map.put("uniqueFileNames", uniqueFileNames);
+        return map;
     }
+
+
 
     /**
      * 임시 파일 취소 및 브라우즈 닫기
