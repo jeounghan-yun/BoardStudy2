@@ -46,7 +46,7 @@
         <selectKey keyProperty="rseq" resultType="int" order="BEFORE">
             select coalesce(MAX(seq),0)+1 from ST_BOARD_MST
         </selectKey>
-        insert into ST_BOARD_MST (SEQ   , TTL   , CNTS   , REG_ID   , REG_DATE                              , FILE_YN)
+        insert into ST_BOARD_MST (SEQ    , TTL   , CNTS   , REG_ID   , REG_DATE                              , FILE_YN)
                           values (#{rseq}, #{ttl}, #{cnts}, #{userId}, date_format(sysdate(), '%Y%m%d%H%i%S'), #{fileYn})
     </insert>
 

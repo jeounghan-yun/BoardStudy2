@@ -5,12 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class Common {
-
-
 
     /**
      * 데이터 존재하는지 여부 체크
@@ -52,7 +48,7 @@ public class Common {
      * @param filesInDir
      */
     public static void fileDel (File[] filesInDir) {
-        if (filesInDir != null) {
+        if (filesInDir != null && filesInDir.length > 0) {
             for (File f : filesInDir) {         // 폴더 내 파일 삭제
                 if (f.exists() && f.isFile()) { // 파일 존재 여부 확인
                     f.delete();                 // 파일 삭제
@@ -61,21 +57,20 @@ public class Common {
         }
     }
 
-
     /**
-     * 파일 삭제 폴더까지 삭제
-     * @param filesInDir
+     * 폴더 삭제
+     * @param finalDir
+     * @param targetDir
      */
-    public static void fileDelFolder (File[] filesInDir) {
+    public static void fileDelFolder (File finalDir, File targetDir) {
+        if (finalDir.exists() && finalDir.isDirectory() && finalDir.list().length == 0) {
+            finalDir.delete(); //폴더 삭제
+        }
 
+        if (targetDir.exists() && targetDir.isDirectory() && targetDir.list().length == 0) {
+            targetDir.delete(); //폴더 삭제
+        }
     }
-
-    /**
-     * 특정 파일만 삭제
-     */
-//    public static void fileDelOne () {
-//
-//    }
 }
 
 

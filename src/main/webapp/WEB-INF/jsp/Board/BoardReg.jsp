@@ -53,11 +53,21 @@
             , data : {SEQ : SEQ}
             , success : function (data) {
                 var data = data.DetailData
+                console.log(data);
 
-                $("#ttl").attr('value', data.ttl);
-                $("#userId").attr('value', data.regId);
+                $("#ttl").attr('value', data[0].ttl);
+                $("#userId").attr('value', data[0].regId);
                 document.getElementById("userId").disabled = 'true';
-                $("#cnts").html(data.cnts);
+                $("#cnts").html(data[0].cnts);
+
+                var str = "";
+
+                $.each(data, function (k, v){
+                    if("Y".equals(v.fileYn)) {
+                        str += "<div>" + v.originFileNm + "</div>";
+                    }
+                })
+                $("#fileList").html(str);
             }
         })
     }
@@ -98,7 +108,7 @@
         </form>
         <div class="bt_wrap">
             <a id="isSave" class="on">저장</a>
-            <a onClick="BoardListPage(page)">취소</a>
+            <a id="cancelBtn" onClick="BoardListPage(page); navigator.sendBeacon('/cancelUpload');">취소</a>
         </div>
     </div>
 </div>

@@ -42,16 +42,17 @@ public class FileUtil {
         }
 
         // 폴더가 존재하면 파일 삭제
-        File[] filesInDir = tmpDir.listFiles();
-        Common.fileDel(filesInDir);
+//        File[] filesInDir = tmpDir.listFiles();
+//        Common.fileDel(filesInDir);
 
         // 파일 저장 및 파일 상태 검증
         for (MultipartFile file : files) {
-            String originalFileName = file.getOriginalFilename();
+            String originalFileName = file.getOriginalFilename();           // 원본 파일명
+            Path tempPath           = Paths.get(tempDir, originalFileName); // 임시파일 경로 + 원본 파일명 합치기
 
-            Path tempPath = Paths.get(tempDir, originalFileName);
-            Files.copy(file.getInputStream(), tempPath, StandardCopyOption.REPLACE_EXISTING);
-            fileNmList.add(originalFileName);
+            Files.copy(file.getInputStream(), tempPath, StandardCopyOption.REPLACE_EXISTING); // 임시저장
+
+            fileNmList.add(originalFileName); // 원본 파일명 추출
         }
 
         return fileNmList;
@@ -74,7 +75,7 @@ public class FileUtil {
         Path tmpDir                    = Paths.get(tempDir);                  // 임시 파일 폴더 경로
         Path finalDir                  = Paths.get(uploadDir, finalFolderNm); // 최종 파일 폴더 경로
         List<String> originalFileNames = new ArrayList<>();                   // 원본파일명 리스트
-        List<String> uniqueFileNames   = new ArrayList<>();                   // 원본파일명 리스트
+        List<String> uniqueFileNames   = new ArrayList<>();                   // 유일파일명 리스트
 
         // 임시 폴더에 파일이 존재하는지 확인
         if (Files.exists(tmpDir) && Files.isDirectory(tmpDir)) {
@@ -87,19 +88,13 @@ public class FileUtil {
             DirectoryStream<Path> directoryStream = Files.newDirectoryStream(tmpDir);
             for (Path filePath : directoryStream) {
                 // 파일명 가져오기 (파일명만 추가)
-                if (Files.isRegularFile(filePath)) { // 파일인지 확인
-                    String originalFileName = filePath.getFileName().toString();  // 원본 파일명
-
-                    // 확장자와 파일명 분리
-                    String fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
-
-                    String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-
-                    // 확장자를 uuid에 추가
-                    String uniqueFileName = uuid + fileExtension;
-
-                    Path targetPath = finalDir.resolve(uniqueFileName);
-                    Files.move(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                if (Files.isRegularFile(filePath)) {                                                             // 파일인지 확인
+                    String originalFileName = filePath.getFileName().toString();                                 // 원본 파일명
+                    String fileExtension    = originalFileName.substring(originalFileName.lastIndexOf('.')); // 확장자와 파일명 분리
+                    String uuid             = UUID.randomUUID().toString().replaceAll("-", "");  // uuid 랜덤키 생성
+                    String uniqueFileName   = uuid + fileExtension;                                              // 확장자를 uuid에 추가
+                    Path targetPath         = finalDir.resolve(uniqueFileName);                                  // 실제 경로에 해당파일을 uuid이름으로 이동
+                    Files.move(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);                       // 임시파일 -> 실제파일 이동
 
                     uniqueFileNames.add(uuid);
                     originalFileNames.add(filePath.getFileName().toString());
@@ -112,9 +107,9 @@ public class FileUtil {
         } else {
             result = "ERROR";
         }
-        map.put("result", result);
+        map.put("result"           , result);
         map.put("originalFileNames", originalFileNames);
-        map.put("uniqueFileNames", uniqueFileNames);
+        map.put("uniqueFileNames"  , uniqueFileNames);
         return map;
     }
 
@@ -127,25 +122,19 @@ public class FileUtil {
     public void FileDelete(Map<String, Object> map) throws IOException {
         String userId   = (String) map.get("regId");
         String seq      = (String) map.get("SEQ");
-        String filePath = userId + "/" + seq + "/";
-        Path finalDir   = Paths.get(uploadDir + filePath);
+        String filePath = userId + "/" + seq;
+        File finalDir   = new File(uploadDir + filePath);
+        File targetDir = new File(uploadDir + userId);
 
         // 파일 삭제
-        if(finalDir.toFile().exists()){
-            Common.fileDel(finalDir.toFile().listFiles());
-            // 폴더 삭제
+        if(finalDir.exists()){
+            File[] files = finalDir.listFiles();
 
+            // 폴더 삭제
+            if (files != null) {
+                Common.fileDel(files);
+                Common.fileDelFolder(finalDir, targetDir);
+            }
         }
     }
-
-    /**
-     * 임시 파일 취소 및 브라우즈 닫기
-     */
-//    public void fileDel(){
-//        File tmpDir = new File(tempDir);     // 파일타입
-//
-//        // 폴더가 존재하면 파일 삭제
-//        File[] filesInDir = tmpDir.listFiles();
-//        Common.fileDel(filesInDir);
-//    }
 }

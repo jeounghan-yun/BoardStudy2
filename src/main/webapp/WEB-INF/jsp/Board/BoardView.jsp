@@ -16,7 +16,6 @@
             , data : {SEQ : SEQ}
             , success : function (data) {
                 var data = data.DetailData;
-                console.log(data);
 
                 $("#seq").html(numCount);
                 $("#ttl").html(data[0].ttl);
@@ -35,7 +34,7 @@
                     }
                 })
 
-                $("#fileBox").html(str);
+                $("#fileList").html(str);
             }
         })
     }
@@ -88,7 +87,7 @@
             </div>
             <div class="cont" id="cnts"></div>
             <div class="file">
-                <div class="fileBox" id="fileBox"></div>
+                <div class="fileBox" id="fileList"></div>
             </div>
 
         </div>
