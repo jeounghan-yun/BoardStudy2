@@ -2,6 +2,8 @@
 
 <script>
     $(document).ready(function () {
+        console.log(regId);
+
         getViewData();
 
         $("#isDel").on('click', function (){
@@ -15,6 +17,7 @@
             , url  : "/Board/BoardDetail"
             , data : {SEQ : SEQ}
             , success : function (data) {
+                console.log(data);
                 var data = data.DetailData;
 
                 $("#seq").html(numCount);

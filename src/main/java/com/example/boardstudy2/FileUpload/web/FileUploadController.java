@@ -1,5 +1,6 @@
 package com.example.boardstudy2.FileUpload.web;
 
+import com.example.boardstudy2.Utils.CommandMap;
 import com.example.boardstudy2.common.Common;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +40,7 @@ public class FileUploadController {
     private String uploadDir;
 
     /**
-     * 임시 파일 저장
+     * 임시 파일 저장 RequestParam
      * @param files
      * @return
      * @throws IOException
@@ -75,14 +76,18 @@ public class FileUploadController {
 
     /**
      * 임시폴더 특정 파일 삭제
-     * @param fileName
+     * @RequestParam String fileName
+     * @param
      * @return
      */
     @PostMapping("/Board/DeleteTempFile")
     @ResponseBody
-    public String deleteTempFile(@RequestParam String fileName) {
-        String errCode = "SUCCESS";
-        File file = new File(tempDir + fileName); //수정
+    public String deleteTempFile(CommandMap commandMap) {
+        String errCode    = "SUCCESS";
+        String fileName   = (String) commandMap.get("fileName"); // 파일 명
+        String tempDirs   = tempDir + fileName;                  // 임시 폴더
+        File file = new File(tempDirs);   //등록
+
 
         if (file.exists()) {
             file.delete();
@@ -105,5 +110,7 @@ public class FileUploadController {
             Common.fileDel(files);
         }
     }
+
+
 
 }

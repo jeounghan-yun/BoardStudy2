@@ -50,24 +50,27 @@
         $.ajax({
               type : "POST"
             , url  : "/Board/BoardDetail"
-            , data : {SEQ : SEQ}
+            , data : {
+                          SEQ       : SEQ
+                     }
             , success : function (data) {
-                var data = data.DetailData
                 console.log(data);
+                var data = data.DetailData;
+                var fileOriginNmList = [];
+                // var fileUniNmList = [];
+                // var fileFlph = data[0].fileFlph;
+                // console.log(fileFlph);
 
                 $("#ttl").attr('value', data[0].ttl);
                 $("#userId").attr('value', data[0].regId);
                 document.getElementById("userId").disabled = 'true';
                 $("#cnts").html(data[0].cnts);
 
-                var str = "";
-
-                $.each(data, function (k, v){
-                    if("Y".equals(v.fileYn)) {
-                        str += "<div>" + v.originFileNm + "</div>";
-                    }
+                $.each(data, function (k, v) {
+                    fileOriginNmList.push(v.originFileNm);
                 })
-                $("#fileList").html(str);
+
+                EditFile(fileOriginNmList);
             }
         })
     }

@@ -60,15 +60,10 @@ public class Common {
     /**
      * 폴더 삭제
      * @param finalDir
-     * @param targetDir
      */
-    public static void fileDelFolder (File finalDir, File targetDir) {
+    public static void fileDelFolder (File finalDir) {
         if (finalDir.exists() && finalDir.isDirectory() && finalDir.list().length == 0) {
             finalDir.delete(); //폴더 삭제
-        }
-
-        if (targetDir.exists() && targetDir.isDirectory() && targetDir.list().length == 0) {
-            targetDir.delete(); //폴더 삭제
         }
     }
 }

@@ -77,11 +77,11 @@
      */
     BoardViewPage = function (seq, regId, page, numCount) {
         var params = {
-            boardMode : "V",
-            SEQ       : seq,
-            regId     : regId,
-            page      : page,
-            numCount  : numCount
+              boardMode : "V"
+            , SEQ       : seq
+            , regId     : regId
+            , page      : page
+            , numCount  : numCount
         }
         gotoPage(params);
     }
@@ -92,8 +92,8 @@
      */
     BoardRegPage = function (page) {
         var params = {
-            boardMode : "W",
-            page      : page,
+              boardMode : "W"
+            , page      : page
         }
         gotoPage(params);
     }
@@ -104,9 +104,9 @@
      */
     BoardListPage = function (page, useYn) {
         var params = {
-              boardMode : "L",
-              page      : page,
-              useYn     : useYn
+                boardMode : "L"
+              , page      : page
+              , useYn     : useYn
         }
         gotoPage(params);
     }
@@ -117,9 +117,10 @@
      */
     BoardEditPage = function (page) {
         var params = {
-            boardMode : "E",
-            SEQ       : SEQ,
-            page      : page
+              boardMode : "E"
+            , SEQ       : SEQ
+            // , regId     : regId
+            , page      : page
         }
         gotoPage(params);
     }

@@ -9,10 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 @PropertySource("classpath:application.properties")
@@ -61,19 +58,15 @@ public class FileUtil {
     /**
      * 업로드 파일 저장
      * 임시폴더에서 -> 최종 업로드 폴더로 파일 이동
-     *
-     * 추가해야됌 취소 및 브라우저 창 껐을 시 임시폴더 파일 삭제
      * @param map
      * @return
      * @throws IOException
      */
     public Map<String, Object> UploadFile(Map<String, Object> map) throws IOException {
         String result                  = "SUCCESS";                           // 성공 여부
-        String userId                  = (String) map.get("userId");          // 등록자ID
         int seq                        = (Integer) map.get("rseq");           // 시퀀스
-        String finalFolderNm           = userId + "/" + seq;                  // 폴더 경로
         Path tmpDir                    = Paths.get(tempDir);                  // 임시 파일 폴더 경로
-        Path finalDir                  = Paths.get(uploadDir, finalFolderNm); // 최종 파일 폴더 경로
+        Path finalDir                  = Paths.get(uploadDir + seq); // 최종 파일 폴더 경로
         List<String> originalFileNames = new ArrayList<>();                   // 원본파일명 리스트
         List<String> uniqueFileNames   = new ArrayList<>();                   // 유일파일명 리스트
 
@@ -91,7 +84,7 @@ public class FileUtil {
                 if (Files.isRegularFile(filePath)) {                                                             // 파일인지 확인
                     String originalFileName = filePath.getFileName().toString();                                 // 원본 파일명
                     String fileExtension    = originalFileName.substring(originalFileName.lastIndexOf('.')); // 확장자와 파일명 분리
-                    String uuid             = UUID.randomUUID().toString().replaceAll("-", "");  // uuid 랜덤키 생성
+                    String uuid             = UUID.randomUUID().toString();                                      // uuid 랜덤키 생성
                     String uniqueFileName   = uuid + fileExtension;                                              // 확장자를 uuid에 추가
                     Path targetPath         = finalDir.resolve(uniqueFileName);                                  // 실제 경로에 해당파일을 uuid이름으로 이동
                     Files.move(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);                       // 임시파일 -> 실제파일 이동
@@ -113,28 +106,5 @@ public class FileUtil {
         return map;
     }
 
-    /**
-     * 첨부파일 삭제
-     * @param map
-     * @return
-     * @throws IOException
-     */
-    public void FileDelete(Map<String, Object> map) throws IOException {
-        String userId   = (String) map.get("regId");
-        String seq      = (String) map.get("SEQ");
-        String filePath = userId + "/" + seq;
-        File finalDir   = new File(uploadDir + filePath);
-        File targetDir = new File(uploadDir + userId);
 
-        // 파일 삭제
-        if(finalDir.exists()){
-            File[] files = finalDir.listFiles();
-
-            // 폴더 삭제
-            if (files != null) {
-                Common.fileDel(files);
-                Common.fileDelFolder(finalDir, targetDir);
-            }
-        }
-    }
 }

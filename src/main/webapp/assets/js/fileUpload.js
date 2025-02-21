@@ -1,50 +1,3 @@
-
-/**
- * 파일 임시 저장
- */
-// fileTemp = function () {
-//     var files = $('#file')[0].files;
-//     var fileList = $('#fileList');
-//     var formData = new FormData;
-//
-//     fileList.empty(); // 기존 목록 초기화
-//
-//     for (var i = 0; i < files.length; i++) {
-//         formData.append("files", files[i]);
-//     }
-//
-//     $.ajax({
-//         type : "POST"
-//         , url         : "/Board/AjaxTempFile"
-//         , data        : formData
-//         , processData : false
-//         , contentType : false
-//         , success     : function (data) {
-//             for (var i = 0; i < data.length; i++) {
-//                 (function (fileName) {
-//                     var listItem = $('<li>').text(fileName);
-//
-//                     var deleteBtn = $('<button class="delBtn">')
-//                         .text('삭제')
-//                         .attr('data-file', fileName)
-//                         .on('click', function (){
-//                             deleteFile(fileName, $(this).parent());
-//                         });
-//
-//                     listItem.append(deleteBtn);
-//                     fileList.append(listItem);
-//                 })(files[i].name)
-//                 // (data[i]);
-//             }
-//         },
-//         error: function (err) {
-//             console.error("파일 업로드 실패", err);
-//         }
-//     })
-// }
-//
-//
-
 /**
  * 임시파일 저장
  */
@@ -53,7 +6,7 @@ fileTemp = function () {
     var files = fileInput.files;
     // var fileList = $('#fileList');
     var formData = new FormData();
-    var dt = new DataTransfer();
+    var dt = new DataTransfer();    //데이터 관리 및 저장역할
 
     // 기존 파일 유지 (이전 파일이 있으면 추가)
     if (fileInput.files.length > 0) {
@@ -61,27 +14,47 @@ fileTemp = function () {
             dt.items.add(fileInput.files[i]);
         }
     }
-
-    // 새로 선택한 파일 추가
     for (var i = 0; i < files.length; i++) {
         dt.items.add(files[i]);
         formData.append("files", files[i]); // 서버 전송용 FormData 추가
     }
 
+    tempAjax(formData);
+};
+
+function tempAjax(formData) {
     $.ajax({
-        type: "POST",
-        url: "/Board/AjaxTempFile",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (data) {
+          type: "POST"
+        , url: "/Board/AjaxTempFile"
+        , data: formData
+        , processData: false
+        , contentType: false
+        , success: function (data) {
+            console.log(data);
             renderFileList(data); // 화면에 파일 목록 업데이트
         },
         error: function (err) {
             console.error("파일 업로드 실패", err);
         }
     });
-};
+}
+
+/**
+ * 수정 페이지 리스트
+ * @param fileNmList
+ * @constructor
+ */
+function EditFile(fileNmList) {
+    var saveList = [];
+
+    // 기존 파일 유지 (이전 파일이 있으면 추가)
+    if (fileNmList.length > 0) {
+        for (var i = 0; i < fileNmList.length; i++) {
+            saveList.push(fileNmList[i]);
+        }
+    }
+    renderFileList(fileNmList);
+}
 
 /**
  * 파일 목록을 화면에 출력하는 함수
@@ -98,7 +71,7 @@ function renderFileList(fileListData) {
                 .text('삭제')
                 .attr('data-file', fileName)
                 .on('click', function () {
-                    deleteFile(index, fileName, $(this).parent());
+                    deleteFile(index, $(this).parent(), fileName);
                 });
 
             listItem.append(deleteBtn);
@@ -113,14 +86,14 @@ function renderFileList(fileListData) {
  * @param fileName
  * @param listItem
  */
-function deleteFile(fileIndex, fileName, listItem) {
+function deleteFile(fileIndex, listItem, fileName) {
     var fileInput = $('#file')[0];
     var dt = new DataTransfer();
 
     $.ajax({
         type: "POST",
         url: "/Board/DeleteTempFile",
-        data: { fileName: fileName },
+        data: {fileName  : fileName},
         success: function (data) {
             if ("SUCCESS".equals(data)) {
                 for (var i = 0; i < fileInput.files.length; i++) {
@@ -128,32 +101,9 @@ function deleteFile(fileIndex, fileName, listItem) {
                         dt.items.add(fileInput.files[i]);
                     }
                 }
-
                 fileInput.files = dt.files; // 값 업데이트
                 listItem.remove(); // 화면에서도 삭제
             }
         }
     });
-
 }
-
-// document.getElementById('cancelBtn').addEventListener('click', function(event) {
-//     // 서버에 임시 파일 삭제 요청
-//     navigator.sendBeacon('/cancelUpload');
-// });
-
-// $('#cancelBtn').addEventListener('click', function(event) {
-//     // 서버에 임시 파일 삭제 요청
-//     navigator.sendBeacon('/cancelUpload');
-// });
-
-
-// document.getElementById('cancelBtn').addEventListener('beforeunload', function (event) {
-//     // 서버에 임시 파일 삭제 요청
-//     navigator.sendBeacon('/cancelUpload');
-// });
-
-// window.addEventListener('beforeunload', function (event) {
-//     // 서버에 임시 파일 삭제 요청
-//     navigator.sendBeacon('/cancelUpload');
-// });

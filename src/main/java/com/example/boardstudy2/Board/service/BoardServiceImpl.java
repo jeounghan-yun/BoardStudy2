@@ -10,6 +10,7 @@ import com.example.boardstudy2.common.Common;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +76,7 @@ public class BoardServiceImpl implements BoardService{
 
                     if(originalFileNames.size() > 0){
                         map.put("mseq", mseq);                  // 게시물 seq를 file의 상위 번호로 넣어줌.
-                        map.put("flph", userId + "/" + mseq + "/");
+                        map.put("flph", mseq + "/");
 
                         for(int i = 0 ; i < originalFileNames.size() ; i++) {
                             map.put("originalFileNames", originalFileNames.get(i));
@@ -124,9 +125,10 @@ public class BoardServiceImpl implements BoardService{
 
             if(Common.isEmpty(map.get("SEQ")) || resultInt < 1){ // SEQ를 먼저 체크하고 삭제 로직으로 들어간다.
                 result = "ERROR";
-            } else {
-                fileUtil.FileDelete(map);
             }
+//            else {
+//                fileUtil.FileDelete(map);
+//            }
         } catch (Exception e) {
             result = "ERROR";
         } finally {
@@ -146,7 +148,7 @@ public class BoardServiceImpl implements BoardService{
         try{
             int resultInt = boardDAO.BoardEditData(map);
 
-            if(Common.isEmpty(map.get("SEQ")) || resultInt != 1){ // SEQ를 먼저 체크하고 삭제 로직으로 들어간다.
+            if(Common.isEmpty(map.get("SEQ")) || resultInt != 1){
                 result = "ERROR";
             }
         } catch (Exception e) {

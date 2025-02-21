@@ -1,5 +1,6 @@
 package com.example.boardstudy2.Board.web;
 
+import com.example.boardstudy2.Utils.FileUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import com.example.boardstudy2.Board.service.BoardService;
 import com.example.boardstudy2.Utils.CommandMap;
 import com.example.boardstudy2.common.Common;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +19,9 @@ import java.util.Map;
 public class BoardController {
     @Autowired
     private BoardService boardService;
+
+    @Autowired
+    private FileUtil fileUtil;
 
     /**
      * 게시판 기본
@@ -154,6 +159,7 @@ public class BoardController {
 
         return mv;
     }
+
 }
 
 
