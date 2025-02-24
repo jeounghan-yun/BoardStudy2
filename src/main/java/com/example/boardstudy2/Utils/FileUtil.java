@@ -66,7 +66,7 @@ public class FileUtil {
         String result                  = "SUCCESS";                           // 성공 여부
         int seq                        = (Integer) map.get("rseq");           // 시퀀스
         Path tmpDir                    = Paths.get(tempDir);                  // 임시 파일 폴더 경로
-        Path finalDir                  = Paths.get(uploadDir + seq); // 최종 파일 폴더 경로
+        Path finalDir                  = Paths.get(uploadDir + seq);      // 최종 파일 폴더 경로
         List<String> originalFileNames = new ArrayList<>();                   // 원본파일명 리스트
         List<String> uniqueFileNames   = new ArrayList<>();                   // 유일파일명 리스트
 
@@ -106,5 +106,56 @@ public class FileUtil {
         return map;
     }
 
+    /**
+     * 실제 파일 -> 임시 파일
+     * @param map
+     * @throws Exception
+     */
+    public void getUploadFile(Map<String, Object> map) throws Exception {
+        String seq                      = (String) map.get("SEQ");            // 시퀀스
+        Path tmpPath                    = Paths.get(tempDir);                 // 임시 파일 폴더 경로
+        Path finalPath                  = Paths.get(uploadDir + seq);    // 최종 파일 폴더 경로
 
+        // 디렉터리 내부의 파일 리스트 가져오기
+        File[] files = finalPath.toFile().listFiles();
+
+        for (File file : files) {
+            if (file.isFile()) { // 파일인 경우만 복사
+                Path sourceFile = file.toPath();
+                Path targetFile = tmpPath.resolve(file.getName()); // 대상 파일 경로 설정
+
+                Files.copy(sourceFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
+            }
+        }
+    }
+
+    /**
+     * 파일 수정
+     * @param map
+     * @return
+     * @throws Exception
+     */
+    public String editUplodFile(Map<String, Object> map) throws Exception {
+        String result     = "SUCCESS";
+        String seq        = (String) map.get("SEQ");   // 시퀀스
+        String uploadDirs = uploadDir + seq;
+        Path tmpDir       = Paths.get(tempDir);        // 임시 파일 폴더 경로
+        Path finalDir     = Paths.get(uploadDirs);     // 최종 파일 폴더 경로
+
+        File[] filesInDir = finalDir.toFile().listFiles();
+        Common.fileDel(filesInDir);
+
+        if (Files.exists(tmpDir) && Files.isDirectory(tmpDir)) {
+            // 임시 폴더의 모든 파일 이동
+            DirectoryStream<Path> directoryStream = Files.newDirectoryStream(tmpDir);
+            for (Path filePath : directoryStream) {
+                // 파일명 가져오기 (파일명만 추가)
+                if (Files.isRegularFile(filePath)) {
+                    Path targetPath = finalDir.resolve(filePath.getFileName());             // 최종 경로 (파일명 유지)
+                    Files.move(filePath, targetPath, StandardCopyOption.REPLACE_EXISTING);  // 임시파일 -> 실제파일 이동
+                }
+            }
+        }
+        return result;
+    }
 }

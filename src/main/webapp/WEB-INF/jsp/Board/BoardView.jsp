@@ -2,8 +2,6 @@
 
 <script>
     $(document).ready(function () {
-        console.log(regId);
-
         getViewData();
 
         $("#isDel").on('click', function (){
@@ -17,7 +15,6 @@
             , url  : "/Board/BoardDetail"
             , data : {SEQ : SEQ}
             , success : function (data) {
-                console.log(data);
                 var data = data.DetailData;
 
                 $("#seq").html(numCount);
@@ -96,7 +93,7 @@
         </div>
         <div class="bt_wrap">
             <a onClick="BoardListPage(page)" class="on">목록</a>
-            <a onClick="BoardEditPage(page)">수정</a>
+            <a onClick="BoardEditPage(page, RSEQ)">수정</a>
             <a id="isDel" class="del">삭제</a>
         </div>
     </div>

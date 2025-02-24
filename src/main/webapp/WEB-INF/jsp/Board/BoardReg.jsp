@@ -24,12 +24,12 @@
             } else {
                 isSave = true;
             }
-
             if(isSave === true){
+                console.log(fileNames);
                 $.ajax({
                       type : "POST"
                     , url  : url
-                    , data : $("#frmRegBoard").serialize() + "&SEQ=" + SEQ
+                    , data : $("#frmRegBoard").serialize() + "&SEQ=" + SEQ + "&fileNames=" + fileNames
                     , success : function (data) {
                         if("SUCCESS".equals(data.errCode)){
                             alert("저장 되었습니다.");
@@ -52,14 +52,12 @@
             , url  : "/Board/BoardDetail"
             , data : {
                           SEQ       : SEQ
+                        , boardMode : boardMode
                      }
             , success : function (data) {
-                console.log(data);
                 var data = data.DetailData;
                 var fileOriginNmList = [];
-                // var fileUniNmList = [];
-                // var fileFlph = data[0].fileFlph;
-                // console.log(fileFlph);
+                var fileUniNmList = [];
 
                 $("#ttl").attr('value', data[0].ttl);
                 $("#userId").attr('value', data[0].regId);
@@ -68,9 +66,10 @@
 
                 $.each(data, function (k, v) {
                     fileOriginNmList.push(v.originFileNm);
+                    fileUniNmList.push(v.uniFileNm)
                 })
 
-                EditFile(fileOriginNmList);
+                EditFile(fileOriginNmList, fileUniNmList);
             }
         })
     }

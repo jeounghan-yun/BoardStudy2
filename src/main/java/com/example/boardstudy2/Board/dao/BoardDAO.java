@@ -73,4 +73,13 @@ public class BoardDAO  extends CommonMapper {
     public int BoardEditData(Map<String, Object> map) throws Exception {
         return (int) update("mapper.board.boardEditData", map);
     }
+
+    /**
+     * 게시물 파일 수정
+     * @param map
+     * @throws Exception
+     */
+    public void boardFileEdit(Map<String, Object> map) throws Exception {
+        update("mapper.board.boardFileEdit", map);
+    }
 }

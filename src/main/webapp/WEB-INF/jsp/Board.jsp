@@ -19,6 +19,7 @@
     var page            = "${page}";
     var numCount        = "${numCount}"
     var useYn           = "${useYn}";
+    var fileNames = [];
     var listCnt;
 
     $(document).ready(function () {
@@ -115,11 +116,11 @@
      * 수정 페이지 이동
      * @constructor
      */
-    BoardEditPage = function (page) {
+    BoardEditPage = function (page, RSEQ) {
         var params = {
               boardMode : "E"
             , SEQ       : SEQ
-            // , regId     : regId
+            , RSEQ      : RSEQ
             , page      : page
         }
         gotoPage(params);
@@ -136,6 +137,7 @@
 
         comSubmit.addParam("boardMode"      , params.boardMode);
         comSubmit.addParam("SEQ"            , params.SEQ);
+        // comSubmit.addParam("RSEQ"           , params.RSEQ);
         comSubmit.addParam("regId"          , params.regId);
 
         comSubmit.addParam("page"           , params.page);

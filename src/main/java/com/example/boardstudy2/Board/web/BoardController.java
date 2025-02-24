@@ -59,6 +59,7 @@ public class BoardController {
         mv.addObject("endDate"        , commandMap.get("endDate"));
         mv.addObject("pagingListCount", commandMap.get("pagingListCount"));
         mv.addObject("numCount"       , commandMap.get("numCount"));
+//        mv.addObject("RSEQ"           , commandMap.get("RSEQ"));
 
         if("N".equals(commandMap.get("useYn"))){
             mv.addObject("useYn", "N");

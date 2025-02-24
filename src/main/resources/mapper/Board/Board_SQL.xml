@@ -73,11 +73,13 @@
              , b.FILE_FLPH              fileFlph
              , b.ORIGIN_FILE_NM         originFileNm
              , b.UNIQUE_FILE_NM         uniFileNm
+<!--             , b.SEQ                    rseq-->
           from ST_BOARD_MST a
           left join ST_BOARD_FILE b
                  on a.SEQ = b.MSEQ
          where 1=1
            and a.SEQ  = #{SEQ}
+           and b.DEL_ID is null
     </select>
 
     <!--게시물 조회수 업데이트-->
@@ -109,8 +111,21 @@
            set TTL       = #{ttl}
              , CNTS      = #{cnts}
              , EDIT_ID   = REG_ID
-             , EDIT_DATE = DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%S')
+             , EDIT_DATE = date_format(sysdate(), '%Y%m%d%H%i%S')
          where 1=1
            and SEQ = #{SEQ}
+    </update>
+
+    <!--게시물 파일 삭제-->
+    <update id="boardFileEdit" parameterType="hashmap">
+        <!--mapper.board.boardFileEdit-->
+        update ST_BOARD_FILE
+           set DEL_ID   = 'ADMIN'
+             , DEL_DATE = date_format(sysdate(), '%Y%m%d%H%i%S')
+         where 1=1
+           and ORIGIN_FILE_NM in
+           <foreach collection="fileNames" item="fileName" open="(" separator="," close=")">
+               #{fileName}
+           </foreach>
     </update>
 </mapper>

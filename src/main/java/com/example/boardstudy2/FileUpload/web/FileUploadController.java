@@ -83,9 +83,24 @@ public class FileUploadController {
     @PostMapping("/Board/DeleteTempFile")
     @ResponseBody
     public String deleteTempFile(CommandMap commandMap) {
-        String errCode    = "SUCCESS";
-        String fileName   = (String) commandMap.get("fileName"); // 파일 명
-        String tempDirs   = tempDir + fileName;                  // 임시 폴더
+        String errCode     = "SUCCESS";
+        String fileName    = (String) commandMap.get("fileName"); // 파일 명
+        String unifileName = (String) commandMap.get("unifileName"); // 파일 명
+        String tempDirs    = "";
+
+        // 확장자 추출
+        String fileExtension = "";
+        if (fileName != null && fileName.contains(".")) {
+            fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
+        }
+
+        if("E".equals(commandMap.get("boardMode"))){
+            tempDirs = tempDir + unifileName + "." + fileExtension; // 수정 시 uuid로 찾기
+        } else {
+            tempDirs = tempDir + fileName;    // 등록 시 파일명으로 찾기
+        }
+
+
         File file = new File(tempDirs);   //등록
 
 

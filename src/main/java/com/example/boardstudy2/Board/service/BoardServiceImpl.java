@@ -1,17 +1,13 @@
 package com.example.boardstudy2.Board.service;
 
 import com.example.boardstudy2.Utils.FileUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.example.boardstudy2.Board.dao.BoardDAO;
 import com.example.boardstudy2.common.Common;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -55,11 +51,8 @@ public class BoardServiceImpl implements BoardService{
      */
     public String InsertBoardData(Map<String, Object> map) throws Exception {
         String result = "SUCCESS";
-        String userId = (String) map.get("userId");
         List<String> originalFileNames = new ArrayList<>(); // 오리지날 파일명 리스트
         List<String> uniqueFileNames   = new ArrayList<>(); // 유니크 파일명 리스트
-//        int resultBoardInt; // 게시판 글 성공 여부
-//        int resultFileInt;  // 게시물 파일 등록 성공 여부
 
         try {
             // 파일 존재 확인
@@ -108,7 +101,18 @@ public class BoardServiceImpl implements BoardService{
      */
     public List<Map<String, Object>> BoardDetailData(Map<String, Object> map) throws Exception {
         boardDAO.BoardReadCnt(map);
-        return boardDAO.BoardDetailData(map);
+
+        List<Map<String, Object>> resultMap = new ArrayList<>();
+
+        resultMap = boardDAO.BoardDetailData(map);
+
+        Map<String, Object> firstData = resultMap.get(0);
+        String fileYn = (String) firstData.get("fileYn");
+
+        if("E".equals(map.get("boardMode")) && "Y".equals(fileYn)){
+            fileUtil.getUploadFile(map);
+        }
+        return resultMap;
     }
 
     /**
@@ -126,9 +130,6 @@ public class BoardServiceImpl implements BoardService{
             if(Common.isEmpty(map.get("SEQ")) || resultInt < 1){ // SEQ를 먼저 체크하고 삭제 로직으로 들어간다.
                 result = "ERROR";
             }
-//            else {
-//                fileUtil.FileDelete(map);
-//            }
         } catch (Exception e) {
             result = "ERROR";
         } finally {
@@ -147,6 +148,15 @@ public class BoardServiceImpl implements BoardService{
         
         try{
             int resultInt = boardDAO.BoardEditData(map);
+
+            // 파일 수정
+            fileUtil.editUplodFile(map);
+
+            String fileNames = (String) map.get("fileNames");
+            List<String> fileNameList = Arrays.asList(fileNames.split(","));
+            map.put("fileNames", fileNameList);
+
+            boardDAO.boardFileEdit(map);
 
             if(Common.isEmpty(map.get("SEQ")) || resultInt != 1){
                 result = "ERROR";

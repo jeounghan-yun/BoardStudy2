@@ -30,8 +30,7 @@ function tempAjax(formData) {
         , processData: false
         , contentType: false
         , success: function (data) {
-            console.log(data);
-            renderFileList(data); // 화면에 파일 목록 업데이트
+            renderFileList1(data); // 화면에 파일 목록 업데이트
         },
         error: function (err) {
             console.error("파일 업로드 실패", err);
@@ -44,7 +43,7 @@ function tempAjax(formData) {
  * @param fileNmList
  * @constructor
  */
-function EditFile(fileNmList) {
+function EditFile(fileNmList, uniNmList) {
     var saveList = [];
 
     // 기존 파일 유지 (이전 파일이 있으면 추가)
@@ -53,30 +52,54 @@ function EditFile(fileNmList) {
             saveList.push(fileNmList[i]);
         }
     }
-    renderFileList(fileNmList);
+    renderFileList2(fileNmList, uniNmList);
 }
 
 /**
  * 파일 목록을 화면에 출력하는 함수
  * @param fileListData
  */
-function renderFileList(fileListData) {
+function renderFileList1(fileListData) {
     var fileList = $('#fileList');
 
     for (var i = 0; i < fileListData.length; i++) {
-        (function (fileName, index) {
-            var listItem = $('<li>').text(fileName);
+        (function (fileName, index, uniNmList) {
+            var listItem1 = $('<li>').text(fileName);
 
             var deleteBtn = $('<button class="delBtn">')
                 .text('삭제')
                 .attr('data-file', fileName)
                 .on('click', function () {
-                    deleteFile(index, $(this).parent(), fileName);
+                    deleteFile(index, $(this).parent(), fileName, uniNmList);
                 });
 
-            listItem.append(deleteBtn);
-            fileList.append(listItem);
+            listItem1.append(deleteBtn);
+            fileList.append(listItem1);
         })(fileListData[i], i);
+    }
+}
+
+/**
+ * 파일 목록을 화면에 출력하는 함수2
+ * @param fileListData
+ */
+function renderFileList2(fileListData, uniNmList) {
+    var fileList = $('#fileList');
+
+    for (var i = 0; i < fileListData.length; i++) {
+        (function (fileName, index, uniNmList) {
+            var listItem2 = $('<li>').text(fileName);
+
+            var deleteBtn = $('<button class="delBtn">')
+                .text('삭제')
+                .attr('data-file', fileName)
+                .on('click', function () {
+                    deleteFile(index, $(this).parent(), fileName, uniNmList);
+                });
+
+            listItem2.append(deleteBtn);
+            fileList.append(listItem2);
+        })(fileListData[i], i, uniNmList[i]);
     }
 }
 
@@ -86,14 +109,18 @@ function renderFileList(fileListData) {
  * @param fileName
  * @param listItem
  */
-function deleteFile(fileIndex, listItem, fileName) {
+function deleteFile(fileIndex, listItem, fileName, uniNmList) {
     var fileInput = $('#file')[0];
     var dt = new DataTransfer();
 
     $.ajax({
         type: "POST",
         url: "/Board/DeleteTempFile",
-        data: {fileName  : fileName},
+        data: {
+              fileName    : fileName
+            , unifileName : uniNmList
+            , boardMode   : boardMode
+        },
         success: function (data) {
             if ("SUCCESS".equals(data)) {
                 for (var i = 0; i < fileInput.files.length; i++) {
@@ -101,8 +128,10 @@ function deleteFile(fileIndex, listItem, fileName) {
                         dt.items.add(fileInput.files[i]);
                     }
                 }
+                fileNames.push(fileName);
+
                 fileInput.files = dt.files; // 값 업데이트
-                listItem.remove(); // 화면에서도 삭제
+                listItem.remove();          // 화면에서도 삭제
             }
         }
     });

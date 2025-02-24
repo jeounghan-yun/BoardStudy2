@@ -2,7 +2,6 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        console.log(useYn);
         pagingListCounts();
 
         if("Y".equals(useYn)){
@@ -31,7 +30,6 @@
             , url     : "/Board/BoardList"
             , data    : $("#frmSrchBoard").serialize() + "&page=" + page
             , success : function (data) {
-                console.log(data);
                 var data = data.list;
 
                 listCnt = $("#pagingListCount").val();

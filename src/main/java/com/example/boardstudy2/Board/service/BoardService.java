@@ -47,11 +47,4 @@ public interface BoardService {
      * @throws Exception
      */
     String BoardEditData(Map<String, Object> map) throws Exception;
-
-    /**
-     * 게시물 개수
-     * @return
-     * @throws Exception
-     */
-//    int selectBoardCount(Map<String, Object> map)throws Exception;
 }
