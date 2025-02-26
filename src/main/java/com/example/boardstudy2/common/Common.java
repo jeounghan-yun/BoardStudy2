@@ -27,7 +27,6 @@ public class Common {
     public static boolean fileCheck (String tempDir) {
         Path tmpDir   = Paths.get(tempDir);           // 임시 파일 폴더 경로
 
-
         if (Files.exists(tmpDir) && Files.isDirectory(tmpDir)) {
             try {
                 boolean hasFiles = Files.list(tmpDir).findAny().isPresent(); // 파일이 하나라도 있으면 true 반환
@@ -40,6 +39,25 @@ public class Common {
             }
         }
         return false;
+    }
+
+    /**
+     * 특정 파일 삭제
+     * @param finalPath
+     * @param fileToDelete
+     */
+    public static void specifcDel (Path finalPath, String fileToDelete) {
+        try {
+            if (fileToDelete != null) {
+                // 폴더에서 파일 삭제
+                Path finalFilePath = finalPath.resolve(fileToDelete);
+                if (Files.exists(finalFilePath)) {
+                    Files.delete(finalFilePath);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // 오류 로그 출력
+        }
     }
 
     /**

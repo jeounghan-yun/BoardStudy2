@@ -173,7 +173,7 @@ public class BoardServiceImpl implements BoardService{
             map.put("flph"  , seq + "/");
 
             if(!Common.isEmpty(addFileNames)){
-                for(int i = 0 ; i < addFileNameList.size(); i++) {
+                for(int i = 0 ; i < originalFileNames.size(); i++) {
                     map.put("originalFileNames", originalFileNames.get(i));
                     map.put("uniqueFileNames"  , uniqueFileNames.get(i));
 

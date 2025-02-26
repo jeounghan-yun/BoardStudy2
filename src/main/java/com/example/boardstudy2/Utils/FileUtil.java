@@ -104,9 +104,9 @@ public class FileUtil {
      * @throws Exception
      */
     public void GetUploadFile(List<Map<String, Object>> map) throws Exception {
-        int seq                      = (Integer) map.get(0).get("seq");            // 시퀀스
-        Path tmpPath                    = Paths.get(tempDir);                 // 임시 파일 폴더 경로
-        Path finalPath                  = Paths.get(uploadDir + seq);    // 최종 파일 폴더 경로
+        int seq        = (Integer) map.get(0).get("seq");    // 시퀀스
+        Path tmpPath   = Paths.get(tempDir);                 // 임시 파일 폴더 경로
+        Path finalPath = Paths.get(uploadDir + seq);    // 최종 파일 폴더 경로
 
         // 디렉터리 내부의 파일 리스트 가져오기
         File[] files = finalPath.toFile().listFiles();
@@ -121,9 +121,14 @@ public class FileUtil {
         }
     }
 
+    /**
+     * 파일 삭제
+     * @param map
+     * @throws IOException
+     */
     public void DelFile(Map<String, Object> map) throws IOException {
-        String seq = (String) map.get("SEQ"); // 시퀀스
-        Path finalPath = Paths.get(uploadDir + seq); // 최종 파일 폴더 경로
+        String seq                = (String) map.get("SEQ"); // 시퀀스
+        Path finalPath            = Paths.get(uploadDir + seq); // 최종 파일 폴더 경로
         List<String> delFileNames = (List<String>) map.get("delFileNames"); // 삭제할 파일 리스트
 
         if (delFileNames != null) {
@@ -142,14 +147,7 @@ public class FileUtil {
                         }
                     }
                 }
-
-                if (fileToDelete != null) {
-                    // 최종 폴더에서 파일 삭제
-                    Path finalFilePath = finalPath.resolve(fileToDelete);
-                    if (Files.exists(finalFilePath)) {
-                        Files.delete(finalFilePath);
-                    }
-                }
+                Common.specifcDel(finalPath, fileToDelete);
             }
         }
     }
