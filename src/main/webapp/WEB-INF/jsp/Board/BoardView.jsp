@@ -28,7 +28,8 @@
 
                 $.each(data, function (k, v){
                     if("Y".equals(v.fileYn)) {
-                        str += "<div><a href='http://localhost:8080/download?filePath=" + v.fileFlph + "&uuid=" + v.uniFileNm + "&originFileName=" + encodeURIComponent(v.originFileNm) + "' download='" + v.originFileNm + "'>" + v.originFileNm + "</a></div>";
+                        // str += "<div><a href='http://localhost:8080/download?filePath=" + v.fileFlph + "&uuid=" + v.uniFileNm + "&originFileName=" + encodeURIComponent(v.originFileNm) + "' download='" + v.originFileNm + "'>" + v.originFileNm + "</a></div>";
+                        str += "<div class='file-item'>" + "<a href='http://localhost:8080/download?filePath=" + v.fileFlph + "&uuid=" + v.uniFileNm + "&originFileName=" + encodeURIComponent(v.originFileNm) + "' download='" + v.originFileNm + "' class='file-name'>" + v.originFileNm + "</a>" + "</div>";
                     } else {
                         str += "<div>파일 없음.</div>"
                     }

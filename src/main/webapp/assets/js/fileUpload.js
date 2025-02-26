@@ -64,7 +64,9 @@ function renderFileList1(fileListData) {
 
     for (var i = 0; i < fileListData.length; i++) {
         (function (fileName, index, uniNmList) {
-            var listItem1 = $('<li>').text(fileName);
+            // var listItem1 = $('<li>').text(fileName);
+            var listItem1 = $('<li class="file-item">'); // 파일 아이템 컨테이너
+            var fileNameSpan = $('<span class="file-name">').text(fileName);
 
             var deleteBtn = $('<button class="delBtn">')
                 .text('삭제')
@@ -73,7 +75,9 @@ function renderFileList1(fileListData) {
                     deleteFile(index, $(this).parent(), fileName, uniNmList);
                 });
 
-            listItem1.append(deleteBtn);
+            // listItem1.append(deleteBtn);
+            listItem1.append(fileNameSpan);  // 파일 이름 추가
+            listItem1.append(deleteBtn);  // 삭제 버튼 추가 (오른쪽으로 정렬됨)
             fileList.append(listItem1);
             addFileNames.push(fileName);
         })(fileListData[i], i);
@@ -89,7 +93,10 @@ function renderFileList2(fileListData, uniNmList) {
 
     for (var i = 0; i < fileListData.length; i++) {
         (function (fileName, index, uniNmList) {
-            var listItem2 = $('<li>').text(fileName);
+            // var listItem2 = $('<li>').text(fileName);
+            var listItem2 = $('<li class="file-item">'); // 파일 아이템 컨테이너
+
+            var fileNameSpan = $('<span class="file-name">').text(fileName);
 
             var deleteBtn = $('<button class="delBtn">')
                 .text('삭제')
@@ -98,7 +105,9 @@ function renderFileList2(fileListData, uniNmList) {
                     deleteFile(index, $(this).parent(), fileName, uniNmList);
                 });
 
-            listItem2.append(deleteBtn);
+            // listItem2.append(deleteBtn);
+            listItem2.append(fileNameSpan);  // 파일 이름 추가
+            listItem2.append(deleteBtn);  // 삭제 버튼 추가 (오른쪽으로 정렬됨)
             fileList.append(listItem2);
         })(fileListData[i], i, uniNmList[i]);
     }
