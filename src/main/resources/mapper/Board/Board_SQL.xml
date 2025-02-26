@@ -63,22 +63,23 @@
     <!--게시물 상세-->
     <select id="boardDetailData" parameterType="hashmap" resultType="hashmap">
         <!--mapper.Board.BoardDetailData : 게시물 상세-->
-        select a.SEQ                    seq
-             , a.TTL                    ttl
-             , a.CNTS                   cnts
-             , a.READ_CNT               readCnt
-             , a.REG_ID                 regId
-             , SUBSTR(a.REG_DATE, 1, 8) regDate
-             , a.FILE_YN                fileYn
-             , b.FILE_FLPH              fileFlph
-             , b.ORIGIN_FILE_NM         originFileNm
-             , b.UNIQUE_FILE_NM         uniFileNm
+        select a.SEQ                    seq,
+               a.TTL                    ttl,
+               a.CNTS                   cnts,
+               a.READ_CNT               readCnt,
+               a.REG_ID                 regId,
+               SUBSTR(a.REG_DATE, 1, 8) regDate,
+               a.FILE_YN                fileYn,
+               b.FILE_FLPH              fileFlph,
+               b.ORIGIN_FILE_NM         originFileNm,
+               b.UNIQUE_FILE_NM         uniFileNm
           from ST_BOARD_MST a
-          left join ST_BOARD_FILE b
-                 on a.SEQ = b.MSEQ
-         where 1=1
-           and a.SEQ  = #{SEQ}
-           and b.DEL_ID is null
+          left outer join ST_BOARD_FILE b
+                       on a.SEQ = b.MSEQ
+           and b.DEL_ID IS NULL
+         where a.SEQ = #{SEQ};
+
+
     </select>
 
     <!--게시물 조회수 업데이트-->
@@ -107,13 +108,20 @@
     <!--게시물 수정-->
     <update id="boardEditData" parameterType="hashmap">
         <!--mapper.Board.BoardEditData : 게시물 수정-->
-        update ST_BOARD_MST
-           set TTL       = #{ttl}
-             , CNTS      = #{cnts}
-             , EDIT_ID   = REG_ID
-             , EDIT_DATE = date_format(sysdate(), '%Y%m%d%H%i%S')
-         where 1=1
-           and SEQ = #{SEQ}
+        UPDATE ST_BOARD_MST
+           SET TTL       = #{ttl},
+               CNTS      = #{cnts},
+               EDIT_ID   = REG_ID,
+               EDIT_DATE = DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%S'),
+               FILE_YN   = (
+                            SELECT case
+                                   when count(*) = 0 then 'N' else 'Y'
+                                    end
+                              FROM ST_BOARD_FILE
+                             WHERE MSEQ = #{SEQ}
+                               AND DEL_ID IS NULL
+                           )
+         WHERE SEQ = #{SEQ};
     </update>
 
     <!--게시물 파일 삭제-->

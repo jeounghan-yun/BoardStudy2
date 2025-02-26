@@ -756,6 +756,11 @@ button[class*="btn"] {border: 0;}
     flex-shrink: 0;
 }
 
+.file-icon {
+    width: 20px;
+    height: 20px;
+}
+
 
 
 

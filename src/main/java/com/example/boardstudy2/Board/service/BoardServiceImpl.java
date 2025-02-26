@@ -155,35 +155,37 @@ public class BoardServiceImpl implements BoardService{
         List<String> uniqueFileNames   = new ArrayList<>(); // 유니크 파일명 리스트
 
         try{
-            int resultInt = boardDAO.BoardEditData(map);
+            if(Common.isEmpty(map.get("SEQ"))) {
+                result = "ERROR";
+            }
 
             map.put("delFileNames", delFileNameList);
             map.put("addFileNames", addFileNameList);
 
             if(!Common.isEmpty(delFileNames)){
-                fileUtil.DelFile(map);
-                boardDAO.DeleteFileData(map);
-            }
-
-            fileUtil.AddMoveFile(map);
-            originalFileNames = (List<String>) map.get("originalFileNames");
-            uniqueFileNames   = (List<String>) map.get("uniqueFileNames");
-            map.put("mseq"  , map.get("SEQ"));
-            map.put("fileYn", map.get("Y"));
-            map.put("flph"  , seq + "/");
-
-            if(!Common.isEmpty(addFileNames)){
-                for(int i = 0 ; i < originalFileNames.size(); i++) {
-                    map.put("originalFileNames", originalFileNames.get(i));
-                    map.put("uniqueFileNames"  , uniqueFileNames.get(i));
-
-                    boardDAO.InsertFileData(map);              // 파일 DB에 저장
+                result = fileUtil.DelFile(map);
+                if("SUCCESS".equals(result)){
+                    boardDAO.DeleteFileData(map);
                 }
             }
 
-            if(Common.isEmpty(map.get("SEQ")) || resultInt != 1){
-                result = "ERROR";
+            if(!Common.isEmpty(delFileNameList) || !Common.isEmpty(addFileNameList)){
+                fileUtil.AddMoveFile(map);
+                originalFileNames = (List<String>) map.get("originalFileNames");
+                uniqueFileNames   = (List<String>) map.get("uniqueFileNames");
+                map.put("mseq"  , map.get("SEQ"));
+                map.put("flph"  , seq + "/");
+
+                if(!Common.isEmpty(addFileNames)){
+                    for(int i = 0 ; i < originalFileNames.size(); i++) {
+                        map.put("originalFileNames", originalFileNames.get(i));
+                        map.put("uniqueFileNames"  , uniqueFileNames.get(i));
+                        boardDAO.InsertFileData(map);              // 파일 DB에 저장
+                    }
+                }
             }
+            boardDAO.BoardEditData(map);
+
         } catch (Exception e) {
             result = "ERROR";
         } finally {

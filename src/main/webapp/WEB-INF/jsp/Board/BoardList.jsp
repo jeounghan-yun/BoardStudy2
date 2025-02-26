@@ -50,9 +50,10 @@
                     str +=   "<div class='title'><a onClick='BoardViewPage("+ v.seq +", \"" + v.regId + "\", "+ page + ", "+ numCount + ");'>" + v.ttl     +"</a></div>";
 
                     if('Y'.equals(v.fileYn)){
-                        str +=   "<div class='fileYn'>" + v.fileYn + "</div>";
+                        str += "<div class='fileYn'><img src='assets/images/file_icon.png' class='file-icon'></div>";
+
                     } else {
-                        str +=   "<div class='fileYn'>" + v.fileYn + "</div>";
+                        str +=   "<div class='fileYn'></div>";
                     }
 
                     str +=   "<div class='writer'>"                                                                                            + v.regId   +"</div>";
@@ -112,7 +113,7 @@
             <div class="top">
                 <div class="num">    번호</div>
                 <div class="title">  제목</div>
-                <div class="fileYn">첨부파일</div>
+                <div class="fileYn"><img src='assets/images/file_icon.png' class='file-icon'></div>
                 <div class="writer"> 등록자</div>
                 <div class="date">   등록일</div>
                 <div class="count">  조회수</div>

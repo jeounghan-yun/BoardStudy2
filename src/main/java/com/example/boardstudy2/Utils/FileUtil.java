@@ -126,7 +126,8 @@ public class FileUtil {
      * @param map
      * @throws IOException
      */
-    public void DelFile(Map<String, Object> map) throws IOException {
+    public String DelFile(Map<String, Object> map) throws IOException {
+        String result             = "SUCCESS";
         String seq                = (String) map.get("SEQ"); // 시퀀스
         Path finalPath            = Paths.get(uploadDir + seq); // 최종 파일 폴더 경로
         List<String> delFileNames = (List<String>) map.get("delFileNames"); // 삭제할 파일 리스트
@@ -145,11 +146,14 @@ public class FileUtil {
                                 break;
                             }
                         }
+                    } catch (Exception e) {
+                        result = "ERROR";
                     }
                 }
                 Common.specifcDel(finalPath, fileToDelete);
             }
         }
+        return result;
     }
 
     /**

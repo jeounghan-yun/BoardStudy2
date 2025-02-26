@@ -73,7 +73,9 @@
                     fileUniNmList.push(v.uniFileNm);
                 })
 
-                EditFile(fileOriginNmList, fileUniNmList);
+                if(!isNull(data[0].originFileNm)){
+                    EditFile(fileOriginNmList, fileUniNmList);
+                }
             }
         })
     }
