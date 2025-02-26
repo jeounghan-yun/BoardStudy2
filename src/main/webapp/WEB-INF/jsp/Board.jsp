@@ -138,7 +138,6 @@
 
         comSubmit.addParam("boardMode"      , params.boardMode);
         comSubmit.addParam("SEQ"            , params.SEQ);
-        // comSubmit.addParam("RSEQ"           , params.RSEQ);
         comSubmit.addParam("regId"          , params.regId);
 
         comSubmit.addParam("page"           , params.page);

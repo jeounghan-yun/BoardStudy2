@@ -41,7 +41,7 @@ public class BoardServiceImpl implements BoardService{
         map.put("endDate"  , endDate.replace("-"  , ""));
 
 
-        return boardDAO.selectBoardList(map);
+        return boardDAO.SelectBoardList(map);
     }
 
     /**
@@ -165,7 +165,7 @@ public class BoardServiceImpl implements BoardService{
                 fileUtil.DelFile(map);
             }
 
-            fileUtil.addMoveFile(map);
+            fileUtil.AddMoveFile(map);
             originalFileNames = (List<String>) map.get("originalFileNames");
             uniqueFileNames   = (List<String>) map.get("uniqueFileNames");
             map.put("mseq"  , map.get("SEQ"));

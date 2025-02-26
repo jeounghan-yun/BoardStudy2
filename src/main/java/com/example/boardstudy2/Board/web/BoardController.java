@@ -155,7 +155,6 @@ public class BoardController {
         ModelAndView mv = new ModelAndView("jsonView");
 
         String errCode = boardService.BoardEditData(commandMap.getMap());
-//        String errCode = boardService.InsertBoardData(commandMap.getMap());
 
         mv.addObject("errCode", errCode);
 

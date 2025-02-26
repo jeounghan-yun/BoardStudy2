@@ -160,8 +160,7 @@ public class FileUtil {
      * @return
      * @throws IOException
      */
-    public Map<String, Object> addMoveFile(Map<String, Object> map) throws IOException {
-        String uuid                    = "";
+    public Map<String, Object> AddMoveFile(Map<String, Object> map) throws IOException {
         String result                  = "SUCCESS";
         String seq                     = (String) map.get("SEQ");                 // 시퀀스
         Path tmpDir                    = Paths.get(tempDir);                      // 임시 파일 폴더 경로
@@ -184,7 +183,7 @@ public class FileUtil {
                         // 새로운 파일이면 UUID로 변환 후 이동
                         else if (addFileNames.contains(originalFileName)) {
                             String fileExtension  = originalFileName.substring(originalFileName.lastIndexOf('.')); // 확장자
-                            uuid                  = Common.UUIDCreate();                                                               // UUID 생성
+                            String uuid           = Common.UUIDCreate();                                              // UUID 생성
                             String uniqueFileName = uuid + fileExtension;                                             // UUID 파일명 생성
 
                             Common.moveFile(filePath, finalDir, uniqueFileName);

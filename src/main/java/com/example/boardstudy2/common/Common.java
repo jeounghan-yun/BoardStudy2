@@ -79,6 +79,16 @@ public class Common {
     }
 
     /**
+     * UUID 생성
+     * @return
+     */
+    public static String UUIDCreate() {
+        String uuid;
+        uuid = UUID.randomUUID().toString();
+        return uuid;
+    }
+
+    /**
      * 파일 이동
      * @param beforeFile
      * @param afterFile
@@ -90,16 +100,6 @@ public class Common {
         } catch (IOException e) {
             e.printStackTrace(); // 오류 로그 출력
         }
-    }
-
-    /**
-     * UUID 생성
-     * @return
-     */
-    public static String UUIDCreate() {
-        String uuid;
-        uuid = UUID.randomUUID().toString();
-        return uuid;
     }
 
     /**

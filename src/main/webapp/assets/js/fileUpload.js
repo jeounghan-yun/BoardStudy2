@@ -1,10 +1,9 @@
 /**
- * 임시파일 저장
+ * 임시 파일 저장
  */
 fileTemp = function () {
     var fileInput = $('#file')[0];
     var files = fileInput.files;
-    // var fileList = $('#fileList');
     var formData = new FormData();
     var dt = new DataTransfer();    //데이터 관리 및 저장역할
 
@@ -22,6 +21,10 @@ fileTemp = function () {
     tempAjax(formData);
 };
 
+/**
+ * 임시 파일 저장
+ * @param formData
+ */
 function tempAjax(formData) {
     $.ajax({
           type: "POST"
@@ -31,9 +34,6 @@ function tempAjax(formData) {
         , contentType: false
         , success: function (data) {
             renderFileList1(data); // 화면에 파일 목록 업데이트
-        },
-        error: function (err) {
-            console.error("파일 업로드 실패", err);
         }
     });
 }
@@ -56,7 +56,7 @@ function EditFile(fileNmList, uniNmList) {
 }
 
 /**
- * 파일 목록을 화면에 출력하는 함수1
+ * 파일 목록을 화면에 출력 함수1
  * @param fileListData
  */
 function renderFileList1(fileListData) {
@@ -80,7 +80,7 @@ function renderFileList1(fileListData) {
 }
 
 /**
- * 파일 목록을 화면에 출력하는 함수2
+ * 파일 목록을 화면에 출력 함수2
  * @param fileListData
  */
 function renderFileList2(fileListData, uniNmList) {

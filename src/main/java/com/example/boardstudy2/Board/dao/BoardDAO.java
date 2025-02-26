@@ -14,7 +14,7 @@ public class BoardDAO  extends CommonMapper {
      * @return
      * @throws Exception
      */
-    public List<Map<String, Object>> selectBoardList(Map<String, Object> map) throws Exception {
+    public List<Map<String, Object>> SelectBoardList(Map<String, Object> map) throws Exception {
         return (List<Map<String, Object>>) selectPagingList("mapper.board.selectBoardList", map);
     }
 
