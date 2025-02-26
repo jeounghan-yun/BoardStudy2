@@ -56,7 +56,7 @@ function EditFile(fileNmList, uniNmList) {
 }
 
 /**
- * 파일 목록을 화면에 출력하는 함수
+ * 파일 목록을 화면에 출력하는 함수1
  * @param fileListData
  */
 function renderFileList1(fileListData) {
@@ -72,9 +72,9 @@ function renderFileList1(fileListData) {
                 .on('click', function () {
                     deleteFile(index, $(this).parent(), fileName, uniNmList);
                 });
-
             listItem1.append(deleteBtn);
             fileList.append(listItem1);
+            addFileNames.push(fileName);
         })(fileListData[i], i);
     }
 }
@@ -128,7 +128,7 @@ function deleteFile(fileIndex, listItem, fileName, uniNmList) {
                         dt.items.add(fileInput.files[i]);
                     }
                 }
-                fileNames.push(fileName);
+                delFileNames.push(uniNmList);
 
                 fileInput.files = dt.files; // 값 업데이트
                 listItem.remove();          // 화면에서도 삭제

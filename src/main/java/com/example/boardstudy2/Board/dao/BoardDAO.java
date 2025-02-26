@@ -34,7 +34,7 @@ public class BoardDAO  extends CommonMapper {
      * @throws Exception
      */
     public int InsertFileData(Map<String, Object> map) throws Exception{
-        return (int) insert("mapper.board.insertFileData", map);
+        return (int) insert("mapper.board.InsertFileData", map);
     }
 
     /**
@@ -75,11 +75,11 @@ public class BoardDAO  extends CommonMapper {
     }
 
     /**
-     * 게시물 파일 수정
+     * 게시물 파일 삭제
      * @param map
      * @throws Exception
      */
-    public void boardFileEdit(Map<String, Object> map) throws Exception {
-        update("mapper.board.boardFileEdit", map);
+    public void DeleteFileData(Map<String, Object> map) throws Exception {
+        update("mapper.board.DeleteFileData", map);
     }
 }

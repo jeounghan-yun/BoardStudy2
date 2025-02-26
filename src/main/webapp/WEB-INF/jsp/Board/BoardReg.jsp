@@ -25,11 +25,15 @@
                 isSave = true;
             }
             if(isSave === true){
-                console.log(fileNames);
                 $.ajax({
                       type : "POST"
                     , url  : url
-                    , data : $("#frmRegBoard").serialize() + "&SEQ=" + SEQ + "&fileNames=" + fileNames
+                    , data : $("#frmRegBoard").serialize() +
+                             "&SEQ=" + SEQ    +
+                             "&delFileNames=" + delFileNames +
+                             "&addFileNames=" + addFileNames +
+                             "&userId="       + $("#userId").val() +
+                             "&boardMode="    + boardMode
                     , success : function (data) {
                         if("SUCCESS".equals(data.errCode)){
                             alert("저장 되었습니다.");
@@ -66,7 +70,7 @@
 
                 $.each(data, function (k, v) {
                     fileOriginNmList.push(v.originFileNm);
-                    fileUniNmList.push(v.uniFileNm)
+                    fileUniNmList.push(v.uniFileNm);
                 })
 
                 EditFile(fileOriginNmList, fileUniNmList);

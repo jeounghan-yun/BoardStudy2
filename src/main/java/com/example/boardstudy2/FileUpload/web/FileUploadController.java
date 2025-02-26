@@ -10,6 +10,8 @@ import com.example.boardstudy2.Utils.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.util.*;
 
@@ -69,6 +71,12 @@ public class FileUploadController {
         Path path            = Paths.get(uploadDir, filePaths);                               // 실제 경로 Path타입으로 변경
         Resource resource    = new UrlResource(path.toUri());
 
+        try{
+            originFileName = URLEncoder.encode(originFileName, "UTF-8").replace("+", " ");
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + originFileName + "\"")
                 .body(resource);
@@ -125,7 +133,4 @@ public class FileUploadController {
             Common.fileDel(files);
         }
     }
-
-
-
 }

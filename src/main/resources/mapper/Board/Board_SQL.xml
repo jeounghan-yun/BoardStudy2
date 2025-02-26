@@ -51,7 +51,7 @@
     </insert>
 
     <!--게시물 파일 등록-->
-    <insert id ="insertFileData" parameterType="hashmap">
+    <insert id ="InsertFileData" parameterType="hashmap">
         <!--mapper.Board.insertFileData : 게시물 파일 등록-->
         <selectKey keyProperty="seq" resultType="int" order="BEFORE">
             select coalesce(MAX(seq),0)+1 from ST_BOARD_FILE
@@ -117,14 +117,14 @@
     </update>
 
     <!--게시물 파일 삭제-->
-    <update id="boardFileEdit" parameterType="hashmap">
+    <update id="DeleteFileData" parameterType="hashmap">
         <!--mapper.board.boardFileEdit-->
         update ST_BOARD_FILE
            set DEL_ID   = 'ADMIN'
              , DEL_DATE = date_format(sysdate(), '%Y%m%d%H%i%S')
          where 1=1
-           and ORIGIN_FILE_NM in
-           <foreach collection="fileNames" item="fileName" open="(" separator="," close=")">
+           and UNIQUE_FILE_NM in
+           <foreach collection="delFileNames" item="fileName" open="(" separator="," close=")">
                #{fileName}
            </foreach>
     </update>

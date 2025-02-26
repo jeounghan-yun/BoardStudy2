@@ -19,7 +19,8 @@
     var page            = "${page}";
     var numCount        = "${numCount}"
     var useYn           = "${useYn}";
-    var fileNames = [];
+    var delFileNames = [];
+    var addFileNames = [];
     var listCnt;
 
     $(document).ready(function () {
