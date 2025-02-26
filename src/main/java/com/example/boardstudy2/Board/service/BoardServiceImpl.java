@@ -161,8 +161,8 @@ public class BoardServiceImpl implements BoardService{
             map.put("addFileNames", addFileNameList);
 
             if(!Common.isEmpty(delFileNames)){
-                boardDAO.DeleteFileData(map);
                 fileUtil.DelFile(map);
+                boardDAO.DeleteFileData(map);
             }
 
             fileUtil.AddMoveFile(map);

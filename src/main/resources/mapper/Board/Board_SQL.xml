@@ -92,6 +92,7 @@
 
     <!--게시물 삭제-->
     <update id="boardDelData" parameterType="hashmap">
+        <!--mapper.board.boardDelData : 게시물 삭제-->
         update ST_BOARD_MST a
           left join ST_BOARD_FILE b
                  on a.SEQ = b.MSEQ

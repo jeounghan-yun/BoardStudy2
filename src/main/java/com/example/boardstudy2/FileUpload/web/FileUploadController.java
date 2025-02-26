@@ -105,14 +105,13 @@ public class FileUploadController {
             uniFilePath   = tempDir + unifileName + "." + fileExtension;
         }
 
-        // 이 부분 수정 수정 페이지에서 새로 추가한 파일을 uuid로만 찾고있음.
         if("E".equals(commandMap.get("boardMode"))){
             tempDirs = !Common.isEmpty(unifileName) ? uniFilePath : originFilePath;
         } else {
-            tempDirs = tempDir + fileName;                               // 등록 시 파일명으로 찾기
+            tempDirs = tempDir + fileName; // 등록 시 파일명으로 찾기
         }
 
-        File file = new File(tempDirs);                                  // 등록
+        File file = new File(tempDirs);    // 등록
 
         if (file.exists()) {
             file.delete();

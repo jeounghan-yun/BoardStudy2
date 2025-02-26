@@ -72,6 +72,7 @@ function renderFileList1(fileListData) {
                 .on('click', function () {
                     deleteFile(index, $(this).parent(), fileName, uniNmList);
                 });
+
             listItem1.append(deleteBtn);
             fileList.append(listItem1);
             addFileNames.push(fileName);

@@ -115,6 +115,10 @@ function initialize() {
     })
 }
 
+/**
+ * 달력
+ * @param selector
+ */
 function initializeDatePicker(selector){
     $(selector).datepicker({
         dateFormat: "yy-mm-dd", // 날짜 형식
