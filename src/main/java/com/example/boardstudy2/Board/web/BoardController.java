@@ -38,7 +38,7 @@ public class BoardController {
 
         if (errCode.equals("SUCCESS")){
             if(Common.isEmpty(boardMode)) { // boardMode 데이터가 없다면
-                boardMode = "L";            // "L"을 넣는다.
+                boardMode = "L";            // 기본 "L"을 넣는다.
             }
             mv.setViewName("Board");
         } else {
@@ -49,17 +49,15 @@ public class BoardController {
             errCode = "ERROR";
         }
 
-        mv.addObject("boardMode"      , boardMode);   // boardMode를 mv에 담아서 보내줌.
-
-        mv.addObject("SEQ"            , commandMap.get("SEQ"));
-        mv.addObject("regId"          , commandMap.get("regId"));
-        mv.addObject("srchTitle"      , commandMap.get("srchTitle"));
-        mv.addObject("srchReg"        , commandMap.get("srchReg"));
-        mv.addObject("startDate"      , commandMap.get("startDate"));
-        mv.addObject("endDate"        , commandMap.get("endDate"));
-        mv.addObject("pagingListCount", commandMap.get("pagingListCount"));
-        mv.addObject("numCount"       , commandMap.get("numCount"));
-//        mv.addObject("RSEQ"           , commandMap.get("RSEQ"));
+        mv.addObject("boardMode"      , boardMode);                         // boardMode를 mv에 담아서 보내줌.
+        mv.addObject("SEQ"            , commandMap.get("SEQ"));             // 시퀀스
+        mv.addObject("regId"          , commandMap.get("regId"));           // 등록자
+        mv.addObject("srchTitle"      , commandMap.get("srchTitle"));       // 검색 제목
+        mv.addObject("srchReg"        , commandMap.get("srchReg"));         // 검색 등록자
+        mv.addObject("startDate"      , commandMap.get("startDate"));       // 검색 시작일
+        mv.addObject("endDate"        , commandMap.get("endDate"));         // 검색 종료일
+        mv.addObject("pagingListCount", commandMap.get("pagingListCount")); // 한 페이지 당 출력되는 리스트 개수
+        mv.addObject("numCount"       , commandMap.get("numCount"));        // 리스트 목록 넘버
 
         if("N".equals(commandMap.get("useYn"))){
             mv.addObject("useYn", "N");
@@ -67,7 +65,7 @@ public class BoardController {
             mv.addObject("useYn", "Y");
         }
 
-
+        // 페이지 번호
         if(Common.isEmpty(commandMap.get("page"))) {
             mv.addObject("page", 1);
         } else {

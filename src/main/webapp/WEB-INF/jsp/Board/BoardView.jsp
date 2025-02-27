@@ -2,13 +2,18 @@
 
 <script>
     $(document).ready(function () {
+        // 상세 데이터 출력
         getViewData();
 
+        // 삭제 버튼 클릭 시 게시물 삭제
         $("#isDel").on('click', function (){
             DelData();
         })
     })
 
+    /**
+     * 상세 데이터 출력
+     */
     getViewData = function () {
         $.ajax({
               type : "POST"
@@ -41,6 +46,10 @@
         })
     }
 
+    /**
+     * 게시물 삭제
+     * @constructor
+     */
     DelData = function () {
         $.ajax({
               type : "POST"

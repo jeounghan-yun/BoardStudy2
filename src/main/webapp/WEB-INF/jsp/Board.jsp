@@ -8,17 +8,17 @@
 <script src="assets/js/common.js"                                              type="text/javascript"></script>
 
 <script>
-    var boardMode       = "${boardMode}";
-    var SEQ             = "${SEQ}";
-    var srchTitle       = "${srchTitle}";
-    var srchReg         = "${srchReg}";
-    var regId           = "${regId}";
-    var startDate       = "${startDate}";
-    var endDate         = "${endDate}";
-    var pagingListCount = "${pagingListCount}";
-    var page            = "${page}";
-    var numCount        = "${numCount}"
+    var boardMode       = "${boardMode}";       // 게시물 모드
+    var SEQ             = "${SEQ}";             // 시퀀스
+    var srchTitle       = "${srchTitle}";       // 검색 제목
+    var srchReg         = "${srchReg}";         // 검색 등록자
+    var startDate       = "${startDate}";       // 검색 시작일
+    var endDate         = "${endDate}";         // 검색 종료일
+    var pagingListCount = "${pagingListCount}"; // 한 페이지당 출력되는 리스트 개수
+    var page            = "${page}";            // 페이지
+    var numCount        = "${numCount}"         // 게시물 번호
     var useYn           = "${useYn}";
+    var regId           = "${regId}";           // 등록자
     var delFileNames = [];
     var addFileNames = [];
     var listCnt;
@@ -26,6 +26,9 @@
     $(document).ready(function () {
     })
 
+    /**
+     * 페이지 이동 시 현재 검색어 저장
+     */
     insertSelectBox = function () {
         if(pagingListCount == ""){
             pagingListCounts();
@@ -40,7 +43,7 @@
     }
 
     /**
-     * 검색시 검색어 기억
+     * 검색어 기억 및 데이터 초기화
      */
     onSearch = function () {
         var searchYn = "Y"

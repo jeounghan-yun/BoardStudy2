@@ -37,7 +37,7 @@ function ComSubmit(opt_formId) {
 }
 
 /**
- * 
+ * 비교 함수
  * @param str
  * @returns {boolean}
  */

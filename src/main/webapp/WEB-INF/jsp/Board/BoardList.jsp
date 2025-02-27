@@ -2,28 +2,35 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        // 한 페이지당 리스트 개수 옵션
         pagingListCounts();
 
-        if("Y".equals(useYn)){
-            insertSelectBox();
-        }
-
+        // 등록 페이지 등록 / 상세 페이지 게시물 삭제 시 검색어 초기화
         if("N".equals(useYn)) {
             initialize();
             onSearch();
         }
 
+        // 검색어 기억
+        if("Y".equals(useYn)){
+            insertSelectBox();
+        }
+
+        // 리스트 목록 출력
         getListData();
 
+        // 한 페이지 당 출력되는 리스트 개수 변경 시 마다 기억
         $('#pagingListCount').on('change', function() {
             onSearch();
         });
 
-        /*datePicker*/
+        // datePicker 달력
         initializeDatePicker("#startDate, #endDate");
     })
 
-
+    /**
+     * 리스트 목록 출력
+     */
     getListData = function () {
         $.ajax({
               type    : "POST"
@@ -42,23 +49,20 @@
                 paginNation(params);
 
                 var str = "";
-                var numCount = page > 1 ? data[0].totalCount - (listCnt * (page - 1)) : data[0].totalCount;
+                numCount = page > 1 ? data[0].totalCount - (listCnt * (page - 1)) : data[0].totalCount;
 
                 $("#totalCount").html("총 합계 : " + data[0].totalCount);
                 $.each(data, function(k, v){
-                    str +=   "<div class='num'>"                                                                                               + numCount  +"</div>";
-                    str +=   "<div class='title'><a onClick='BoardViewPage("+ v.seq +", \"" + v.regId + "\", "+ page + ", "+ numCount + ");'>" + v.ttl     +"</a></div>";
+                    let fileYn = "";
+                    // 파일 여부
+                    fileYn = 'Y'.equals(v.fileYn) ? "<div class='fileYn'><img src='assets/images/file_icon.png' class='file-icon'></div>" : "<div class='fileYn'></div>";
 
-                    if('Y'.equals(v.fileYn)){
-                        str += "<div class='fileYn'><img src='assets/images/file_icon.png' class='file-icon'></div>";
-
-                    } else {
-                        str +=   "<div class='fileYn'></div>";
-                    }
-
-                    str +=   "<div class='writer'>"                                                                                            + v.regId   +"</div>";
-                    str +=   "<div class='date'>"                                                                                              + v.regDate +"</div>";
-                    str +=   "<div class='count'>"                                                                                             + v.readCnt +"</div>";
+                    str += "<div class='num'>"    + numCount  +"</div>";
+                    str += "<div class='title'><a onClick='BoardViewPage("+ v.seq +", \"" + v.regId + "\", "+ page + ", "+ numCount + ");'>" + v.ttl     +"</a></div>";
+                    str += fileYn;
+                    str += "<div class='writer'>" + v.regId   +"</div>";
+                    str += "<div class='date'>"   + v.regDate +"</div>";
+                    str += "<div class='count'>"  + v.readCnt +"</div>";
 
                     numCount--;
                 });
@@ -68,6 +72,9 @@
         })
     }
 
+    /**
+     * 한 페이지당 리스트 개수 옵션
+     */
     pagingListCounts = function () {
         var str = ""
 

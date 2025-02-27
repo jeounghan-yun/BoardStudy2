@@ -11,13 +11,13 @@
             and REG_ID like concat('%', #{srchReg}, '%')
         </if>
         <if test="startDate != '' and endDate != ''">
-            and SUBSTR(REG_DATE, 1, 8) BETWEEN #{startDate} and #{endDate}
+            and REG_DATE BETWEEN concat(#{startDate} , '000000') and concat(#{endDate}, '235959')
         </if>
         <if test="startDate != '' and endDate == ''">
-            and SUBSTR(REG_DATE, 1, 8) >= #{startDate}
+            and concat(#{startDate}, '000000') &lt;= concat(REG_DATE, '235959')
         </if>
         <if test="startDate == '' and endDate != ''">
-            and SUBSTR(REG_DATE, 1, 8) &lt;= #{endDate}
+            and concat(REG_DATE, '000000') &lt;= concat(#{endDate}, '235959')
         </if>
     </sql>
 
@@ -35,7 +35,7 @@
           from ST_BOARD_MST
          where 1=1
            <include refid="srchBoard"/>
-           and DEL_ID is null
+           and DEL_DATE is null
          order by REG_DATE desc
            <include refid="common.paging"/>
     </select>
@@ -63,20 +63,20 @@
     <!--게시물 상세-->
     <select id="boardDetailData" parameterType="hashmap" resultType="hashmap">
         <!--mapper.Board.BoardDetailData : 게시물 상세-->
-        select a.SEQ                    seq,
-               a.TTL                    ttl,
-               a.CNTS                   cnts,
-               a.READ_CNT               readCnt,
-               a.REG_ID                 regId,
-               SUBSTR(a.REG_DATE, 1, 8) regDate,
-               a.FILE_YN                fileYn,
-               b.FILE_FLPH              fileFlph,
-               b.ORIGIN_FILE_NM         originFileNm,
-               b.UNIQUE_FILE_NM         uniFileNm
+        select a.SEQ                    seq
+             , a.TTL                    ttl
+             , a.CNTS                   cnts
+             , a.READ_CNT               readCnt
+             , a.REG_ID                 regId
+             , SUBSTR(a.REG_DATE, 1, 8) regDate
+             , a.FILE_YN                fileYn
+             , b.FILE_FLPH              fileFlph
+             , b.ORIGIN_FILE_NM         originFileNm
+             , b.UNIQUE_FILE_NM         uniFileNm
           from ST_BOARD_MST a
           left outer join ST_BOARD_FILE b
                        on a.SEQ = b.MSEQ
-           and b.DEL_ID IS NULL
+                      and b.DEL_DATE is null
          where a.SEQ = #{SEQ};
 
 
@@ -97,9 +97,9 @@
         update ST_BOARD_MST a
           left join ST_BOARD_FILE b
                  on a.SEQ = b.MSEQ
-           set a.DEL_ID   = 'ADMIN'
+           set a.DEL_ID   = '_SYSTEM_'
              , a.DEL_DATE = date_format(sysdate(), '%Y%m%d%H%i%S')
-             , b.DEL_ID   = 'ADMIN'
+             , b.DEL_ID   = '_SYSTEM_'
              , b.DEL_DATE = date_format(sysdate(), '%Y%m%d%H%i%S')
              , a.FILE_YN  = 'N'
          where a.SEQ = #{SEQ};
@@ -108,20 +108,20 @@
     <!--게시물 수정-->
     <update id="boardEditData" parameterType="hashmap">
         <!--mapper.Board.BoardEditData : 게시물 수정-->
-        UPDATE ST_BOARD_MST
-           SET TTL       = #{ttl},
-               CNTS      = #{cnts},
-               EDIT_ID   = REG_ID,
-               EDIT_DATE = DATE_FORMAT(SYSDATE(), '%Y%m%d%H%i%S'),
-               FILE_YN   = (
-                            SELECT case
-                                   when count(*) = 0 then 'N' else 'Y'
-                                    end
-                              FROM ST_BOARD_FILE
-                             WHERE MSEQ = #{SEQ}
-                               AND DEL_ID IS NULL
+        update ST_BOARD_MST
+           set TTL       = #{ttl}
+             , CNTS      = #{cnts}
+             , EDIT_ID   = REG_ID
+             , EDIT_DATE = date_format(SYSDATE(), '%Y%m%d%H%i%S')
+             , FILE_YN   = (
+                            select case when count(*) = 0 then 'N'
+                                        else 'Y'
+                                   end
+                              from ST_BOARD_FILE
+                             where MSEQ = #{SEQ}
+                               and DEL_ID IS NULL
                            )
-         WHERE SEQ = #{SEQ};
+         where SEQ = #{SEQ};
     </update>
 
     <!--게시물 파일 삭제-->

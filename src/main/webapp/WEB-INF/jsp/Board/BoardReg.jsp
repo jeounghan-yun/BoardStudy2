@@ -1,39 +1,52 @@
 <%@page pageEncoding="utf-8"%>
 
 <script>
-    var isSave;
-    var url    = "";
-
     $(document).ready(function () {
-        $("#file").on('change', function () {
-            files = $('#file')[0].files;
-            fileTemp();
-        })
-
+        // 수정 페이지 시 상세 데이터 가져오기
         if(boardMode.equals("E")){
             getViewData()
         }
 
-        url  = boardMode.equals("W") ? "/Board/BoardReg" : "/Board/BoardEdit";
+        // 등록 페이지 시 파일 첨부 실행
+        $("#file").on('change', function () {
+            files = $('#file')[0].files;
+            fileTemp(); //임시 파일 이동
+        })
 
+        // 등록 페이지 등록 버튼을 클릭 실행
         $("#isSave").on('click', function() {
+            var url    = boardMode.equals("W") ? "/Board/BoardReg" : "/Board/BoardEdit";
+            var isSave = true;
 
             if(isNull($("#ttl").val()) || isNull($("#userId").val()) || isNull($("#cnts").val())){
                 alert("빈 칸이 존재합니다.");
                 isSave = false;
-            } else {
-                isSave = true;
             }
-            if(isSave === true){
+
+            // let param = "";
+            //
+            // var comSubmit = new ComSubmit();
+            // comSubmit.addParam("ttl"      , $("#ttl").val());
+            // comSubmit.addParam("userId"      , $("#userId").val());
+            // comSubmit.addParam("cnts"      , $("#cnts").val());
+
+            if ("E".equals(boardMode)) {
+                var param = "&SEQ=" + SEQ    +
+                            "&delFileNames=" + delFileNames +
+                            "&addFileNames=" + addFileNames +
+                            "&userId="       + $("#userId").val() +
+                            "&boardMode="    + boardMode;
+            //     comSubmit.addParam("SEQ"      , SEQ);
+            //     comSubmit.addParam("SEQ"      , SEQ);
+            //     comSubmit.addParam("SEQ"      , SEQ);
+            //     comSubmit.addParam("SEQ"      , SEQ);
+            }
+
+            if (isSave){
                 $.ajax({
                       type : "POST"
                     , url  : url
-                    , data : $("#frmRegBoard").serialize() +
-                             "&SEQ=" + SEQ    +
-                             "&delFileNames=" + delFileNames +
-                             "&addFileNames=" + addFileNames +
-                             "&userId="       + $("#userId").val() +
-                             "&boardMode="    + boardMode
+                    , data : $("#frmRegBoard").serialize() + param //commonForm
                     , success : function (data) {
                         if("SUCCESS".equals(data.errCode)){
                             alert("저장 되었습니다.");

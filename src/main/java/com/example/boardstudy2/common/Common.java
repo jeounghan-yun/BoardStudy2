@@ -33,7 +33,6 @@ public class Common {
                 if(hasFiles) {
                     return true;
                 }
-
             } catch (IOException e) {
                 e.printStackTrace(); // 예외 발생 시 오류 출력
             }

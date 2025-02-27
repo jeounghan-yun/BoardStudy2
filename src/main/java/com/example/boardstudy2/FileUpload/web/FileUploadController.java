@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.file.Files;
 import java.util.*;
 
 import java.nio.file.Path;
@@ -20,7 +19,6 @@ import java.nio.file.Paths;
 import java.net.MalformedURLException;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -52,6 +50,7 @@ public class FileUploadController {
     public List<String> fileUpload(@RequestParam("files") List<MultipartFile> files) throws IOException {
         List<String> list = new ArrayList<>();
 
+        //임시 파일 저장
         list = flieUtil.TempFile(files);
         return list; // 업로드된 파일 이름 목록 반환
     }
@@ -72,8 +71,8 @@ public class FileUploadController {
         Resource resource    = new UrlResource(path.toUri());
 
         try{
+            // 파일명 인코드 및 + -> " "공백
             originFileName = URLEncoder.encode(originFileName, "UTF-8").replace("+", " ");
-
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -105,14 +104,17 @@ public class FileUploadController {
             uniFilePath   = tempDir + unifileName + "." + fileExtension;
         }
 
+        // 수정 시 기존 파일은 기존파일명 / 새로운 파일은 원본파일명 구분 찾기
+        // 등록 시 원본파일명 찾기
         if("E".equals(commandMap.get("boardMode"))){
             tempDirs = !Common.isEmpty(unifileName) ? uniFilePath : originFilePath;
         } else {
-            tempDirs = tempDir + fileName; // 등록 시 파일명으로 찾기
+            tempDirs = tempDir + fileName;
         }
 
         File file = new File(tempDirs);    // 등록
 
+        // 파일 삭제
         if (file.exists()) {
             file.delete();
         } else {
@@ -129,7 +131,7 @@ public class FileUploadController {
     public void cancelUpload() {
         File tmpDir = new File(tempDir);  // 전달된 임시 폴더 경로를 사용해 폴더 객체 생성
 
-        if (tmpDir.exists() && tmpDir.isDirectory()) {
+        if (Common.fileCheck(tempDir)) {
             File[] files = tmpDir.listFiles();  // 폴더 내 모든 파일 목록을 가져옴
             Common.fileDel(files);
         }

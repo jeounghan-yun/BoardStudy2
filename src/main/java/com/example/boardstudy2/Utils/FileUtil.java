@@ -31,7 +31,7 @@ public class FileUtil {
     public List<String> TempFile(List<MultipartFile> files) throws IOException {
         List<String> fileNmList = new ArrayList<>();
 
-        File tmpDir = new File(tempDir);     // 파일타입
+        File tmpDir = new File(tempDir); // 파일타입
 
         // 폴더가 존재하지 않으면 새로 생성
         if(!tmpDir.exists()){
@@ -128,8 +128,8 @@ public class FileUtil {
      */
     public String DelFile(Map<String, Object> map) throws IOException {
         String result             = "SUCCESS";
-        String seq                = (String) map.get("SEQ"); // 시퀀스
-        Path finalPath            = Paths.get(uploadDir + seq); // 최종 파일 폴더 경로
+        String seq                = (String) map.get("SEQ");                // 시퀀스
+        Path finalPath            = Paths.get(uploadDir + seq);        // 최종 파일 폴더 경로
         List<String> delFileNames = (List<String>) map.get("delFileNames"); // 삭제할 파일 리스트
 
         if (delFileNames != null) {
@@ -142,7 +142,7 @@ public class FileUtil {
                         for (Path filePath : stream) {
                             String fileName = filePath.getFileName().toString();
                             if (fileName.startsWith(delFile + ".")) { // 파일명이 삭제 대상과 일치하는지 확인
-                                fileToDelete = fileName;
+                                fileToDelete = fileName;              // 일치하면 변수에 담아줌.
                                 break;
                             }
                         }
@@ -150,7 +150,7 @@ public class FileUtil {
                         result = "ERROR";
                     }
                 }
-                Common.specifcDel(finalPath, fileToDelete);
+                Common.specifcDel(finalPath, fileToDelete); // 특정 파일 삭제
             }
         }
         return result;
@@ -180,7 +180,7 @@ public class FileUtil {
 
                         // 기존 UUID 파일이라면 그대로 유지
                         if (Common.UUIDYn(originalFileName)) { // UUID 형식인지 확인
-                            Common.moveFile(filePath, finalDir, originalFileName);
+                            Common.moveFile(filePath, finalDir, originalFileName); // 임시 폴더 -> 실제 폴더
                         }
                         // 새로운 파일이면 UUID로 변환 후 이동
                         else if (addFileNames.contains(originalFileName)) {
@@ -188,7 +188,7 @@ public class FileUtil {
                             String uuid           = Common.UUIDCreate();                                              // UUID 생성
                             String uniqueFileName = uuid + fileExtension;                                             // UUID 파일명 생성
 
-                            Common.moveFile(filePath, finalDir, uniqueFileName);
+                            Common.moveFile(filePath, finalDir, uniqueFileName); // 임시 폴더 -> 실제 폴더
                             uniqueFileNames.add(uuid);
                             originalFileNames.add(originalFileName);
                         }
