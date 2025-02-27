@@ -84,6 +84,17 @@ public class Common {
     }
 
     /**
+     * 폴더 생성
+     * @param sessionFile
+     */
+    public static void fileaddFolder(File sessionFile) {
+        // 폴더가 존재하지 않으면 새로 생성
+        if(!sessionFile.exists()){
+            sessionFile.mkdirs();
+        }
+    }
+
+    /**
      * UUID 형식 확인
      * @param orginalFileName
      * @return

@@ -119,7 +119,7 @@
                                    end
                               from ST_BOARD_FILE
                              where MSEQ = #{SEQ}
-                               and DEL_ID IS NULL
+                               and DEL_DATE is null
                            )
          where SEQ = #{SEQ};
     </update>

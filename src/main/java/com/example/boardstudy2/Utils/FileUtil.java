@@ -1,6 +1,8 @@
 package com.example.boardstudy2.Utils;
 
 import com.example.boardstudy2.common.Common;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,9 @@ public class FileUtil {
     @Value("${part4.upload.path}")
     private String uploadDir;
 
+    @Autowired
+    private HttpSession httpSession;
+
     /**
      * 파일 임시 저장
      * @param files
@@ -30,8 +35,9 @@ public class FileUtil {
      */
     public List<String> TempFile(List<MultipartFile> files) throws IOException {
         List<String> fileNmList = new ArrayList<>();
-
-        File tmpDir = new File(tempDir); // 파일타입
+        String session          = httpSession.getId(); // 세션 ID 가져오기
+        String strTmpDir        = tempDir + session;
+        File tmpDir             = new File(strTmpDir); // 파일타입
 
         // 폴더가 존재하지 않으면 새로 생성
         if(!tmpDir.exists()){
@@ -41,13 +47,13 @@ public class FileUtil {
         // 파일 저장 및 파일 상태 검증
         for (MultipartFile file : files) {
             String originalFileName = file.getOriginalFilename();                             // 원본 파일명
-            Path tempPath           = Paths.get(tempDir, originalFileName);                   // 임시파일 경로 + 원본 파일명 합치기
+            Path tempPath           = Paths.get(tempDir + session, originalFileName);    // 임시파일 경로 + 원본 파일명 합치기
 
             Files.copy(file.getInputStream(), tempPath, StandardCopyOption.REPLACE_EXISTING); // 임시저장
 
             fileNmList.add(originalFileName);                                                 // 원본 파일명 추출
         }
-
+        httpSession.setAttribute("sessionId", session); // 세션 ID 저장
         return fileNmList;
     }
 
@@ -60,14 +66,17 @@ public class FileUtil {
      */
     public Map<String, Object> UploadFile(Map<String, Object> map) throws IOException {
         String result                  = "SUCCESS";                           // 성공 여부
+        String session                 = (String) httpSession.getAttribute("sessionId"); // 세션 ID 가져오기
         int seq                        = (Integer) map.get("rseq");
-        Path tmpDir                    = Paths.get(tempDir);                  // 임시 파일 폴더 경로
+        String strTmpDir               = tempDir + session;
+        Path tmpDir                    = Paths.get(tempDir + session);   // 임시 파일 폴더 경로
         Path finalDir                  = Paths.get(uploadDir + seq);     // 최종 파일 폴더 경로
         List<String> originalFileNames = new ArrayList<>();                   // 원본파일명 리스트
         List<String> uniqueFileNames   = new ArrayList<>();                   // 유일파일명 리스트
+        File sessionFile               = new File(strTmpDir);                 // 임시 세션 폴더
 
         // 임시 폴더에 파일이 존재하는지 확인
-        if (Common.fileCheck(tempDir)) {
+        if (Common.fileCheck(strTmpDir)) {
             // 최종 폴더가 존재하지 않으면 생성
             if (!Files.exists(finalDir)) {
                 Files.createDirectories(finalDir);
@@ -89,6 +98,9 @@ public class FileUtil {
                     originalFileNames.add(originalFileName);
                 }
             }
+
+            Common.fileDelFolder(sessionFile);              // 세션 ID 폴더 삭제
+            httpSession.removeAttribute("sessionId"); // 세션 ID 세션에서 삭제
         } else {
             result = "ERROR";
         }
@@ -104,9 +116,14 @@ public class FileUtil {
      * @throws Exception
      */
     public void GetUploadFile(List<Map<String, Object>> map) throws Exception {
-        int seq        = (Integer) map.get(0).get("seq");    // 시퀀스
-        Path tmpPath   = Paths.get(tempDir);                 // 임시 파일 폴더 경로
-        Path finalPath = Paths.get(uploadDir + seq);    // 최종 파일 폴더 경로
+        String session   = httpSession.getId();             // 세션 ID 가져오기
+        int seq          = (Integer) map.get(0).get("seq");
+        String strTmpDir = tempDir + session;
+        Path tmpPath     = Paths.get(strTmpDir);            // 임시 파일 폴더 경로
+        Path finalPath   = Paths.get(uploadDir + seq); // 최종 파일 폴더 경로
+        File sessionFile = new File(strTmpDir);             // 임시 세션 폴더
+
+        Common.fileaddFolder(sessionFile); // 폴더 생성
 
         // 디렉터리 내부의 파일 리스트 가져오기
         File[] files = finalPath.toFile().listFiles();
@@ -119,6 +136,7 @@ public class FileUtil {
                 Files.copy(sourceFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
             }
         }
+        httpSession.setAttribute("sessionId", session); // 세션 ID 저장
     }
 
     /**
@@ -164,15 +182,18 @@ public class FileUtil {
      */
     public Map<String, Object> AddMoveFile(Map<String, Object> map) throws IOException {
         String result                  = "SUCCESS";
+        String session                 = httpSession.getId();                     // 세션 ID 가져오기
+        String strTmpDir               = tempDir + session;
         String seq                     = (String) map.get("SEQ");                 // 시퀀스
-        Path tmpDir                    = Paths.get(tempDir);                      // 임시 파일 폴더 경로
+        Path tmpDir                    = Paths.get(strTmpDir + "/");                      // 임시 파일 폴더 경로
         Path finalDir                  = Paths.get(uploadDir + seq);         // 최종 파일 폴더 경로
         List<String> addFileNames      = (List<String>) map.get("addFileNames");  // 추가된 파일 리스트
         List<String> originalFileNames = new ArrayList<>();                       // 원본 파일명 리스트
         List<String> uniqueFileNames   = new ArrayList<>();                       // UUID 파일명 리스트
+        File sessionFile = new File(strTmpDir);                                   // 임시 세션 폴더
 
         // 파일이 존재하는지 확인
-        if (Common.fileCheck(tempDir)) {
+        if (Common.fileCheck(strTmpDir)) {
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(tmpDir)) {
                 for (Path filePath : directoryStream) {
                     if (Files.isRegularFile(filePath)) {
@@ -194,6 +215,8 @@ public class FileUtil {
                         }
                     }
                 }
+                Common.fileDelFolder(sessionFile);              // 세션 ID 폴더 삭제
+                httpSession.removeAttribute("sessionId"); // 세션 ID 세션에서 삭제
             }
         } else {
             result = "ERROR";

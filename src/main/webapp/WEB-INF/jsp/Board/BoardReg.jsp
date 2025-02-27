@@ -23,12 +23,15 @@
                 isSave = false;
             }
 
+            // 데이터 서버로 넘기기
             var comSubmit = new ComSubmit();
 
+            // 기본 데이터
             comSubmit.addParam("ttl"   , $("#ttl").val());
             comSubmit.addParam("userId", $("#userId").val());
             comSubmit.addParam("cnts"  , $("#cnts").val());
 
+            // 수정 코드 시 추가 데이터
             if ("E".equals(boardMode)) {
                 comSubmit.addParam("SEQ"         , SEQ);
                 comSubmit.addParam("delFileNames", delFileNames);

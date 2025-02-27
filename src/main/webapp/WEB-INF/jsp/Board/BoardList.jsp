@@ -17,7 +17,9 @@
         }
 
         // 리스트 목록 출력
-        getListData();
+        // setInterval(function () {
+            getListData();
+        // }, 2000);
 
         // 한 페이지 당 출력되는 리스트 개수 변경 시 마다 기억
         $('#pagingListCount').on('change', function() {

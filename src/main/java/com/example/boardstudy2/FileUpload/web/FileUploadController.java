@@ -2,6 +2,7 @@ package com.example.boardstudy2.FileUpload.web;
 
 import com.example.boardstudy2.Utils.CommandMap;
 import com.example.boardstudy2.common.Common;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class FileUploadController {
+
+    @Autowired
+    private HttpSession httpSession;
 
     @Autowired
     private FileUtil flieUtil;
@@ -93,23 +97,26 @@ public class FileUploadController {
         String errCode        = "SUCCESS";
         String fileName       = (String) commandMap.get("fileName");    // 파일 명
         String unifileName    = (String) commandMap.get("unifileName"); // 파일 명
-        String originFilePath = tempDir + fileName;
         String tempDirs       = "";
         String uniFilePath    = "";
+        String session        = httpSession.getId();                     // 세션 ID 가져오기
+        String originFile     = tempDir + session +  "/" + fileName;
+        String strTmpDir      = tempDir + session;
+
 
         // 확장자 추출
         String fileExtension = "";
         if (fileName != null && fileName.contains(".")) {
             fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1);
-            uniFilePath   = tempDir + unifileName + "." + fileExtension;
+            uniFilePath   = strTmpDir + "/" + unifileName + "." + fileExtension;
         }
 
         // 수정 시 기존 파일은 기존파일명 / 새로운 파일은 원본파일명 구분 찾기
         // 등록 시 원본파일명 찾기
         if("E".equals(commandMap.get("boardMode"))){
-            tempDirs = !Common.isEmpty(unifileName) ? uniFilePath : originFilePath;
+            tempDirs = !Common.isEmpty(unifileName) ? uniFilePath : originFile;
         } else {
-            tempDirs = tempDir + fileName;
+            tempDirs = originFile;
         }
 
         File file = new File(tempDirs);    // 등록
@@ -129,11 +136,15 @@ public class FileUploadController {
      */
     @PostMapping("/cancelUpload")
     public void cancelUpload() {
-        File tmpDir = new File(tempDir);  // 전달된 임시 폴더 경로를 사용해 폴더 객체 생성
+        String session   = (String) httpSession.getAttribute("sessionId");
+        String strTmpDir = tempDir + session;
+        File tmpDir      = new File(strTmpDir);  // 전달된 임시 폴더 경로를 사용해 폴더 객체 생성
 
         if (Common.fileCheck(tempDir)) {
             File[] files = tmpDir.listFiles();  // 폴더 내 모든 파일 목록을 가져옴
             Common.fileDel(files);
+            Common.fileDelFolder(tmpDir);
+            httpSession.removeAttribute("sessionId");
         }
     }
 }
