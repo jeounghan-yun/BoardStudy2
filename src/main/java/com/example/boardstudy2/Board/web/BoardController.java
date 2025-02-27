@@ -45,7 +45,7 @@ public class BoardController {
             errCode = "ERROR";
         }
 
-        if (!"L".equals(boardMode)) {
+        if ("".equals(boardMode)) {
             errCode = "ERROR";
         }
 

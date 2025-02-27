@@ -120,11 +120,10 @@
      * 수정 페이지 이동
      * @constructor
      */
-    BoardEditPage = function (page, RSEQ) {
+    BoardEditPage = function (page) {
         var params = {
               boardMode : "E"
             , SEQ       : SEQ
-            , RSEQ      : RSEQ
             , page      : page
         }
         gotoPage(params);

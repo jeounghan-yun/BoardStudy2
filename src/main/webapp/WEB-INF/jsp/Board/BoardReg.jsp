@@ -23,30 +23,24 @@
                 isSave = false;
             }
 
-            // let param = "";
-            //
-            // var comSubmit = new ComSubmit();
-            // comSubmit.addParam("ttl"      , $("#ttl").val());
-            // comSubmit.addParam("userId"      , $("#userId").val());
-            // comSubmit.addParam("cnts"      , $("#cnts").val());
+            var comSubmit = new ComSubmit();
+
+            comSubmit.addParam("ttl"   , $("#ttl").val());
+            comSubmit.addParam("userId", $("#userId").val());
+            comSubmit.addParam("cnts"  , $("#cnts").val());
 
             if ("E".equals(boardMode)) {
-                var param = "&SEQ=" + SEQ    +
-                            "&delFileNames=" + delFileNames +
-                            "&addFileNames=" + addFileNames +
-                            "&userId="       + $("#userId").val() +
-                            "&boardMode="    + boardMode;
-            //     comSubmit.addParam("SEQ"      , SEQ);
-            //     comSubmit.addParam("SEQ"      , SEQ);
-            //     comSubmit.addParam("SEQ"      , SEQ);
-            //     comSubmit.addParam("SEQ"      , SEQ);
+                comSubmit.addParam("SEQ"         , SEQ);
+                comSubmit.addParam("delFileNames", delFileNames);
+                comSubmit.addParam("addFileNames", addFileNames);
+                comSubmit.addParam("userId"      , $("#userId").val());
             }
 
             if (isSave){
                 $.ajax({
                       type : "POST"
                     , url  : url
-                    , data : $("#frmRegBoard").serialize() + param //commonForm
+                    , data : $("#commonForm").serialize()
                     , success : function (data) {
                         if("SUCCESS".equals(data.errCode)){
                             alert("저장 되었습니다.");
