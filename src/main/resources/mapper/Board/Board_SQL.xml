@@ -102,7 +102,8 @@
              , b.DEL_ID   = '_SYSTEM_'
              , b.DEL_DATE = date_format(sysdate(), '%Y%m%d%H%i%S')
              , a.FILE_YN  = 'N'
-         where a.SEQ = #{SEQ};
+         where 1=1
+           and a.SEQ = #{SEQ};
     </update>
 
     <!--게시물 수정-->
@@ -126,7 +127,7 @@
 
     <!--게시물 파일 삭제-->
     <update id="DeleteFileData" parameterType="hashmap">
-        <!--mapper.board.boardFileEdit-->
+        <!--mapper.board. : 게시물 파일 삭제-->
         update ST_BOARD_FILE
            set DEL_ID   = 'ADMIN'
              , DEL_DATE = date_format(sysdate(), '%Y%m%d%H%i%S')
@@ -136,4 +137,12 @@
                #{fileName}
            </foreach>
     </update>
+
+    <!--게시물 등록 실패 시 글, 파일 삭제-->
+    <delete id="mapper.board.regDelData" parameterType="hashmap">
+        <!--mapper.board.regDelData : 게시물 등록 실패 시 글, 파일 삭제-->
+        delete a, b from ST_BOARD_MST a
+          left join ST_BOARD_FILE b on a.SEQ = b.MSEQ
+         where a.SEQ  = #{rseq}
+    </delete>
 </mapper>

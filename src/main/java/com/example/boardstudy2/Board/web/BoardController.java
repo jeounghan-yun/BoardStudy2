@@ -5,13 +5,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import com.example.boardstudy2.Board.service.BoardService;
 import com.example.boardstudy2.Utils.CommandMap;
 import com.example.boardstudy2.common.Common;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -19,9 +17,6 @@ import java.util.Map;
 public class BoardController {
     @Autowired
     private BoardService boardService;
-
-    @Autowired
-    private FileUtil fileUtil;
 
     /**
      * 게시판 기본

@@ -13,9 +13,10 @@ fileTemp = function () {
             dt.items.add(fileInput.files[i]);
         }
     }
+    // 서버 전송용 FormData 추가
     for (var i = 0; i < files.length; i++) {
         dt.items.add(files[i]);
-        formData.append("files", files[i]); // 서버 전송용 FormData 추가
+        formData.append("files", files[i]);
     }
 
     tempAjax(formData);
@@ -104,7 +105,7 @@ function renderFileList2(fileListData, uniNmList) {
                 });
 
             listItem2.append(fileNameSpan);  // 파일 이름 추가
-            listItem2.append(deleteBtn);  // 삭제 버튼 추가 (오른쪽으로 정렬됨)
+            listItem2.append(deleteBtn);     // 삭제 버튼 추가 (오른쪽으로 정렬됨)
             fileList.append(listItem2);
         })(fileListData[i], i, uniNmList[i]);
     }

@@ -3,6 +3,7 @@ package com.example.boardstudy2.common;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.Map;
 import java.util.UUID;
 
 public class Common {
@@ -138,6 +139,30 @@ public class Common {
     public static String getFile(Path filePath) {
         String fileName = filePath.getFileName().toString();
         return fileName;
+    }
+
+    /**
+     * XSS 치환
+     * @return
+     */
+    public static Map<String, Object> XSSReplace(Map<String, Object> map) {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+
+            // value 값이 String 타입인지 확인
+            if (entry.getValue() instanceof String) {
+                String str = (String) entry.getValue();
+
+                // xss 치환
+                str = str.replace("<", "&lt;")    // 태그 시작
+                        .replace(">", "&gt;")     // 태그 종료
+                        .replace("&", "&amp;")    // html 엔티티 방지
+                        .replace("\"", "&quot;")  // 속성 값 방지
+                        .replace("\'", "&#39;");   // 속성 값 방지
+                // 치환된 값을 다시 map에 넣기
+                map.put(entry.getKey(), str);
+            }
+        }
+        return map;
     }
 }
 

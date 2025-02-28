@@ -82,4 +82,13 @@ public class BoardDAO  extends CommonMapper {
     public void DeleteFileData(Map<String, Object> map) throws Exception {
         update("mapper.board.DeleteFileData", map);
     }
+
+    /**
+     * 게시물 등록 실패 시 글, 파일 삭제
+     * @param map
+     * @throws Exception
+     */
+    public void regDelData(Map<String, Object> map) throws Exception {
+        delete("mapper.board.regDelData", map);
+    }
 }

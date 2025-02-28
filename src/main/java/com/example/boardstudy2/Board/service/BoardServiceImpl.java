@@ -19,9 +19,6 @@ public class BoardServiceImpl implements BoardService{
     @Autowired
     private FileUtil fileUtil;
 
-    @Value("${part4.upload.path}")
-    private String uploadDir;
-
     @Value("${spring.servlet.multipart.location}")
     private String tempDir;
 
@@ -40,7 +37,6 @@ public class BoardServiceImpl implements BoardService{
         map.put("startDate", startDate.replace("-", ""));
         map.put("endDate"  , endDate.replace("-"  , ""));
 
-
         return boardDAO.SelectBoardList(map);
     }
 
@@ -55,6 +51,8 @@ public class BoardServiceImpl implements BoardService{
         List<String> uniqueFileNames   = new ArrayList<>(); // 유니크 파일명 리스트
 
         try {
+            Common.XSSReplace(map); // XSSReplace 메서드 호출
+
             // 파일 존재 시
             if(Common.fileCheck(tempDir)){
                 map.put("fileYn", "Y");
@@ -68,7 +66,7 @@ public class BoardServiceImpl implements BoardService{
 
                     int mseq = (Integer) map.get("rseq");
 
-                    // 등록할 원본 파일명 리스트가 존재한다면
+                    // 등록할 원본 파일명 리스트가 존재한다면 파일 DB등록
                     if(originalFileNames.size() > 0){
                         map.put("mseq", mseq);        // 게시물 seq를 file의 상위 번호로 넣어줌.
                         map.put("flph", mseq + "/");
@@ -81,15 +79,15 @@ public class BoardServiceImpl implements BoardService{
                             boardDAO.InsertFileData(map); // 파일 DB에 등록
                         }
                     } else {
-                        result = "ERROR";
+                        result = "ATTA"; // 첨부파일 실패
                     }
                 } else {
                     result = "ERROR";
                 }
 
-                // ERROR 발생 시 mseq로 삭제 (게시물이 아닌 파일테이블도 삭제해줘야됨.)
+                // ERROR 발생 시 게시물 및 파일 삭제
                 if ("ERROR".equals(result)) {
-                    boardDAO.BoardDelData(map);
+                    boardDAO.regDelData(map);
                 }
             // 파일 존재하지 않을 시
             } else {
@@ -98,6 +96,7 @@ public class BoardServiceImpl implements BoardService{
             }
         } catch (Exception e) {
             result = "ERROR";
+            boardDAO.regDelData(map);
         } finally{
             return result;
         }
@@ -121,7 +120,7 @@ public class BoardServiceImpl implements BoardService{
         Map<String, Object> firstData = resultMap.get(0); // resultMap의 첫 데이터의 파일 여부를 가져옴.
         String fileYn = (String) firstData.get("fileYn");
 
-        // 수정 페이지이면서 파일이 존재할 때 로직을 탐.
+        // 수정 페이지이면서 파일이 존재할 시 로직
         if("E".equals(map.get("boardMode")) && "Y".equals(fileYn)){
             fileUtil.GetUploadFile(resultMap);
         }
@@ -136,11 +135,12 @@ public class BoardServiceImpl implements BoardService{
      */
     public String BoardDelData(Map<String, Object> map) throws Exception {
         String result = "SUCCESS";
+        map.put("result", result);
 
         try {
             int resultInt = boardDAO.BoardDelData(map);
 
-            if(Common.isEmpty(map.get("SEQ")) || resultInt < 1){ // SEQ를 먼저 체크하고 삭제 로직으로 들어간다.
+            if(Common.isEmpty(map.get("SEQ")) || resultInt < 1){
                 result = "ERROR";
             }
         } catch (Exception e) {
@@ -198,18 +198,19 @@ public class BoardServiceImpl implements BoardService{
                     // 5. 디렉터리 파일 추가 및 이동 처리 성공 및 추가 파일이 존재할 시.
                     if("SUCCESS".equals(map.get("result")) && !Common.isEmpty(addFileNames)) {
                         originalFileNames = (List<String>) map.get("originalFileNames");
-                        uniqueFileNames = (List<String>) map.get("uniqueFileNames");
+                        uniqueFileNames   = (List<String>) map.get("uniqueFileNames");
                         map.put("mseq", map.get("SEQ"));
                         map.put("flph", seq + "/");
 
                         for (int i = 0; i < originalFileNames.size(); i++) {
                             map.put("originalFileNames", originalFileNames.get(i));
-                            map.put("uniqueFileNames", uniqueFileNames.get(i));
+                            map.put("uniqueFileNames"  , uniqueFileNames.get(i));
                             boardDAO.InsertFileData(map); // 파일 DB 저장
                         }
                     }
                 }
                 // 6. 게시물 수정
+                Common.XSSReplace(map);
                 boardDAO.BoardEditData(map);
             } else {
                 // SEQ 존재하지 않을 시 ERROR

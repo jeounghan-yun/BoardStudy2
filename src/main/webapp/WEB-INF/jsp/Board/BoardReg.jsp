@@ -17,29 +17,40 @@
         $("#isSave").on('click', function() {
             var url    = boardMode.equals("W") ? "/Board/BoardReg" : "/Board/BoardEdit";
             var isSave = true;
+            var message = "";
 
-            if(isNull($("#ttl").val()) || isNull($("#userId").val()) || isNull($("#cnts").val())){
-                alert("빈 칸이 존재합니다.");
+            // 각 칸이 빈 칸 인지 확인
+            if(isNull($("#ttl").val()) || isNull($("#userId").val()) || isNull($("#cnts").val())) {
+                message = "빈 칸이 존재합니다.<br>";
+                $("#message").html(message);
                 isSave = false;
             }
 
-            // 데이터 서버로 넘기기
-            var comSubmit = new ComSubmit();
-
-            // 기본 데이터
-            comSubmit.addParam("ttl"   , $("#ttl").val());
-            comSubmit.addParam("userId", $("#userId").val());
-            comSubmit.addParam("cnts"  , $("#cnts").val());
-
-            // 수정 코드 시 추가 데이터
-            if ("E".equals(boardMode)) {
-                comSubmit.addParam("SEQ"         , SEQ);
-                comSubmit.addParam("delFileNames", delFileNames);
-                comSubmit.addParam("addFileNames", addFileNames);
-                comSubmit.addParam("userId"      , $("#userId").val());
+            if(XSSCheck($("#ttl").val()) || XSSCheck($("#userId").val()) || XSSCheck($("#cnts").val())) {
+                // alert("<>/& 특수 문제는 허용되지 않습니다.")
+                message += "<>/& 특수 문제는 허용되지 않습니다.";
+                $("#message").html(message);
+                isSave = false;
             }
 
+            // 등록
             if (isSave){
+                // 데이터 서버로 넘기기
+                var comSubmit = new ComSubmit();
+
+                // 기본 데이터
+                comSubmit.addParam("ttl"   , $("#ttl").val());
+                comSubmit.addParam("userId", $("#userId").val());
+                comSubmit.addParam("cnts"  , $("#cnts").val());
+
+                // 수정 코드 시 추가 데이터
+                if ("E".equals(boardMode)) {
+                    comSubmit.addParam("SEQ"         , SEQ);
+                    comSubmit.addParam("delFileNames", delFileNames);
+                    comSubmit.addParam("addFileNames", addFileNames);
+                    comSubmit.addParam("userId"      , $("#userId").val());
+                }
+
                 $.ajax({
                       type : "POST"
                     , url  : url
@@ -47,10 +58,12 @@
                     , success : function (data) {
                         if("SUCCESS".equals(data.errCode)){
                             alert("저장 되었습니다.");
-                            BoardListPage(1, "N");
+                        } else if ("ATTA".equals(data.errcode)){
+                            alert("첨부 파일 등록에 실패했습니다.")
                         } else {
                             alert("오류가 발생하였습니다.");
                         }
+                        BoardListPage(1, "N");
                     }
                 })
             }
@@ -124,6 +137,7 @@
                 </div>
             </div>
         </form>
+        <div id="message" style="font-size : 15px;"></div>
         <div class="bt_wrap">
             <a id="isSave" class="on">저장</a>
             <a id="cancelBtn" onClick="BoardListPage(page); navigator.sendBeacon('/cancelUpload');">취소</a>

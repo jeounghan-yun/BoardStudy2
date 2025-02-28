@@ -185,7 +185,7 @@ public class FileUtil {
         String session                 = httpSession.getId();                     // 세션 ID 가져오기
         String strTmpDir               = tempDir + session;
         String seq                     = (String) map.get("SEQ");                 // 시퀀스
-        Path tmpDir                    = Paths.get(strTmpDir + "/");                      // 임시 파일 폴더 경로
+        Path tmpDir                    = Paths.get(strTmpDir + "/");         // 임시 파일 폴더 경로
         Path finalDir                  = Paths.get(uploadDir + seq);         // 최종 파일 폴더 경로
         List<String> addFileNames      = (List<String>) map.get("addFileNames");  // 추가된 파일 리스트
         List<String> originalFileNames = new ArrayList<>();                       // 원본 파일명 리스트
