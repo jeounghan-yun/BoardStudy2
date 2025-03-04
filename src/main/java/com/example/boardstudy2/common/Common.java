@@ -154,8 +154,8 @@ public class Common {
 
                 // xss 치환
                 str = str.replace("<", "&lt;")    // 태그 시작
-                        .replace(">", "&gt;")     // 태그 종료
-                        .replace("&", "&amp;")    // html 엔티티 방지
+                        .replace(">" , "&gt;")     // 태그 종료
+                        .replace("&" , "&amp;")    // html 엔티티 방지
                         .replace("\"", "&quot;")  // 속성 값 방지
                         .replace("\'", "&#39;");   // 속성 값 방지
                 // 치환된 값을 다시 map에 넣기
