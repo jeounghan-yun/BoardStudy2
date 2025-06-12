@@ -135,7 +135,6 @@
      */
     gotoPage = function (params) {
         var comSubmit = new ComSubmit();
-
         comSubmit.setUrl('/');
 
         comSubmit.addParam("boardMode"      , params.boardMode);

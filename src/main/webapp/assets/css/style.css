@@ -761,6 +761,12 @@ button[class*="btn"] {border: 0;}
     height: 15px;
 }
 
+.right-align {
+    text-align: right;
+    font-size: 15px;
+}
+
+
 
 
 

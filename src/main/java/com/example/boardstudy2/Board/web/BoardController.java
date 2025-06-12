@@ -35,7 +35,7 @@ public class BoardController {
             if(Common.isEmpty(boardMode)) { // boardMode 데이터가 없다면
                 boardMode = "L";            // 기본 "L"을 넣는다.
             }
-            mv.setViewName("Board");
+            mv.setViewName("/Board");
         } else {
             errCode = "ERROR";
         }

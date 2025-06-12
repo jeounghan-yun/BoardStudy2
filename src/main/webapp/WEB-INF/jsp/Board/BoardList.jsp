@@ -7,7 +7,7 @@
 
         // 등록 페이지 등록 / 상세 페이지 게시물 삭제 시 검색어 초기화
         if("N".equals(useYn)) {
-            initialize();
+            initialize('frmSrchBoard');
             onSearch();
         }
 
@@ -40,7 +40,7 @@
             , data    : $("#frmSrchBoard").serialize() + "&page=" + page
             , success : function (data) {
                 var data = data.list;
-
+                console.log(data);
                 listCnt = $("#pagingListCount").val();
                 var params = {
                       currentPage : page
@@ -148,8 +148,14 @@
 </script>
 <body>
 <div class="board_wrap">
+    <div  class="right-align">
+        <a href="/Login/Login">로그인</a>
+    </div>
+    <div>
+        <hr style="border: solid 3px">
+    </div>
     <div class="board_title">
-        <strong>styler 게시판</strong>
+        <strong>styler</strong>
     </div>
     <form id="frmSrchBoard" name="frmSrchBoard" onSubmit="return false">
         <div>
@@ -169,7 +175,7 @@
                 ~
                 <input style="width: 140px; height:20px" type="date" id="endDate" name="endDate" placeholder="종료일" maxlength="10"/>
                 <button style="width: 50px" class="bt_search" onClick="onSearch()">검색</button>
-                <button style="width: 50px" class="bt_search" onClick="initialize()">초기화</button>
+                <button style="width: 50px" class="bt_search" onClick="initialize('frmSrchBoard')">초기화</button>
                 <span style="float: right; font-size: 13px" id="totalCount"></span>
             </div>
         </div>

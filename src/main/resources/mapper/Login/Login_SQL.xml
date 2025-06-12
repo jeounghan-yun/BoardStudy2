@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.login">
+
+    <!--ID 중복 체크-->
+    <select id="IDCheck" parameterType="hashmap" resultType="int">
+        <!--mapper.login.IDCheck : ID 중복 체크-->
+        select USER_ID
+          from ST_USER_MST
+         where 1=1
+           and USER_ID = #{userId};
+    </select>
+
+    <!-- 회원가입 -->
+    <insert id="InsertSignUp" parameterType="hashmap">
+        <!--mapper.Board.insertBoardData : 회원가입-->
+        insert into ST_USER_MST (USER_ID    , USER_PW   , CLPH   , EMAIL   , REG_ID    , REG_DATE                              )
+                         values (#{userId2} , #{userPw2}, #{clph}, #{email2}, #{userId2}, date_format(sysdate(), '%Y%m%d%H%i%S'))
+    </insert>
+</mapper>
