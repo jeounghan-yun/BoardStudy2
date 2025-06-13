@@ -1,12 +1,24 @@
 package com.example.boardstudy2.common;
 
+import com.example.boardstudy2.Utils.KeyStoreUtil;
+import com.example.boardstudy2.Utils.RsaUtil;
+import org.springframework.beans.factory.annotation.Value;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class Common {
+
+    @Value("D:/Project/keyStore")
+    private String keyStorePath;
 
     /**
      * 데이터 존재하는지 여부 체크
@@ -163,6 +175,51 @@ public class Common {
             }
         }
         return map;
+    }
+
+    /**
+     * 암호화
+     * @param passWord
+     * @return
+     */
+    public static String encrypt (String passWord) {
+        String keyStorePath = "D:/Project/keyStore/mykeystore.jks";
+
+        try {
+            KeyStoreUtil.createKeyStoreWithKeyPair(keyStorePath); //mykeystore.jks 생성
+
+            PublicKey publicKey = KeyStoreUtil.loadPublicKeyFromKeyStore(keyStorePath); // 공개키 생성
+            String publicKeyBase64 = Base64.getEncoder().encodeToString(publicKey.getEncoded());
+
+            String encrypted = RsaUtil.rsaEncode(passWord, publicKeyBase64); // 암호화
+
+            return encrypted;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 복호화
+     * @param passWord
+     * @return
+     */
+    public static String decrypt (String passWord) {
+        String keyStorePath = "D:/Project/keyStore/mykeystore.jks";
+
+        try {
+            PrivateKey privateKey = KeyStoreUtil.loadPrivateKeyFromKeyStore(keyStorePath);
+            String privateKeyBase64 = Base64.getEncoder().encodeToString(privateKey.getEncoded());
+
+            // 개인키로 복호화
+            String decrypted = RsaUtil.rsaDecode(passWord, privateKeyBase64);
+
+            return decrypted;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
 

@@ -144,29 +144,3 @@ function emailCheck(email) {
 
     return reg.test(email);
 }
-
-/**
- * ID 중복 체크
- * @param userId
- * @returns {boolean}
- */
-function idCheck(userId, callback) {
-    var isDuplicate = false;
-    console.log('sdfas')
-    $.ajax({
-        type      : "POST"
-        , url     : "/Login/idCheck"
-        , data    : {userId:userId}
-        , success : function (data) {
-            console.log(data);
-            if('SUCCESS'.equals(data.errCode)){
-                isDuplicate = true;
-                callback(isDuplicate);
-            } else {
-                callback(isDuplicate);
-            }
-        }, error: function () {
-            callback(false);
-        }
-    })
-}

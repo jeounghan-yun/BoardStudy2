@@ -59,4 +59,19 @@ public class LoginController {
 
         return mv;
     }
+
+    /**
+     * 로그인
+     * @param commandMap
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value="/SignIn")
+    public ModelAndView SelectSignIn(CommandMap commandMap) throws Exception {
+        ModelAndView mv  = new ModelAndView("jsonView");
+
+        mv.addObject("errCode", loginService.SelectSignIn(commandMap.getMap()));
+
+        return mv;
+    }
 }

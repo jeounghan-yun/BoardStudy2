@@ -22,4 +22,12 @@ public interface LoginService {
      * @throws Exception
      */
     String InsertSignUp (Map<String, Object> map) throws Exception;
+
+    /**
+     * 로그인
+     * @param map
+     * @return
+     * @throws Exception
+     */
+    String SelectSignIn (Map<String, Object> map) throws Exception;
 }

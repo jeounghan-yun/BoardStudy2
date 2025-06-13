@@ -31,6 +31,10 @@
 
             $(this).val(result);
         })
+
+        $("#login").on('click', function () {
+            SaveLogin();
+        })
     })
 
 
@@ -46,60 +50,115 @@
         var signUpSave = true; // 회원가입 참/거짓 체크
         var message = "";      // 오류 메시지
 
-        console.log('email  : ', $("#email2").val(), '\n',
-                    'userId : ', $("#userId2").val(), '\n',
-                    'userPw : ', $("#userPw2").val(), '\n',
-                    'userPwCheck : ', $("#userPwCheck2").val(), '\n',
-                    'clph : ', $("#clph").val(), '\n')
-
+        // 빈 칸 유효성 검사
         if(isNull($("#email2").val()) || isNull($("#userId2").val()) || isNull($("#userPw2").val()) ||
             isNull($("#userPwCheck2").val()) || isNull($("#clph").val())) {
-            message = "빈 칸이 존재합니다..<br>";
-            $("#message").html(message);
+            message = "빈 칸이 존재합니다.<br>";
+            $("#message2").html(message);
             signUpSave = false;
         }
-
 
         // 이메일 형식 유효성 검사
         if(!isNull($("#email2").val())){
             if(!emailCheck($("#email2").val())) {
                 message += "이메일 형식이 맞지 않습니다.<br>";
-                $("#message").html(message);
+                $("#message2").html(message);
                 signUpSave = false;
             }
         }
 
         // ID 중복 체크
-        if(!isNull($("#email2").val())) {
-            idCheck($("#userId2").val(), function (isDuplicate) {
-                if (isDuplicate) {
-                    message += "이미 사용 중인 아이디입니다.<br>";
-                    $("#message").html(message);
-                    signUpSave = false;
+        if(!isNull($("#userId2").val())) {
+            console.log('id 빈칸');
+            $.ajax({
+                type      : "POST"
+                , url     : "/Login/idCheck"
+                , data    : {userId:$("#userId2").val()}
+                , async   : false
+                , success : function (data) {
+                    console.log(data);
+                    if('ERROR'.equals(data.errCode)){
+                        message += "이미 사용 중인 아이디입니다.<br>";
+                        $("#message2").html(message);
+                        signUpSave = false;
+                    }
                 }
-            });
+            })
         }
 
         // 비밀번호 확인 유효성 검사
         if($("#userPw2").val() != $("#userPwCheck2").val()) {
             message += "비밀번호와 비밀번호 확인이 일치하지 않습니다. <br>";
-            $("#message").html(message);
+            $("#message2").html(message);
             signUpSave = false;
         }
 
+        // 회원가입
         if(signUpSave){
             $.ajax({
                 type      : "POST"
                 , url     : "/Login/SignUp"
                 , data    : $("#frmSignUp").serialize()
                 , success : function (data) {
-                    alert("회원가입 완료되었습니다. 로그인하십시오.");
-                    initialize("frmSignUp");
-                    change_to_login(); // 로그인 창으로 전환
+                    console.log(data.errCode);
+                    if('SUCCESS'.equals(data.errCode)){
+                        alert("회원가입 완료되었습니다. 로그인하십시오.");
+                        initialize("frmSignUp");
+                        change_to_login(); // 로그인 창으로 전환
+                    } else {
+                        alert("회원가입이 실패했습니다.");
+                    }
                 }
             })
         }
     }
+
+    /**
+     * 로그인
+     * @constructor
+     */
+    function SaveLogin() {
+        var loginSave = true;
+        var message = "";      // 오류 메시지
+
+        // 빈 칸 유효성 검사
+        if(isNull($("#userId1").val()) && isNull($("#userPw1").val())) {
+            message = "아이디와 비밀번호를 입력해주세요.<br>";
+            $("#message1").html(message);
+            loginSave = false;
+        }
+
+        // 아이디 입력란이 비었을 때
+        if(isNull($("#userId1").val() && !isNull($("#userPw1").val()))) {
+            message = "아이디를 입력해주세요.<br>";
+            $("#message1").html(message);
+            loginSave = false;
+        }
+
+        if(!isNull($("#userId1").val() && isNull($("#userPw1").val()))) {
+            message = "비밀번호를 입력해주세요.<br>";
+            $("#message1").html(message);
+            loginSave = false;
+        }
+
+        if(loginSave) {
+            $.ajax({
+                type: "POST"
+                , url: "/Login/SignIn"
+                , data: $("#frmSignIn").serialize()
+                , success: function (data) {
+                    console.log(data);
+                    if("SUCCESS".equals(data.errCode)) {
+                        alert("로그인이 완료되었습니다.");
+                        BoardListPage();
+                    } else {
+                        alert("로그인이 실패했습니다..");
+                    }
+                }
+            })
+        }
+    }
+
 
 </script>
 <body class="all_box">
@@ -144,6 +203,7 @@
                                 <input type="text" id="userId1" name="userId1" placeholder="ID" />
                                 <input type="password" id="userPw1" name="userPw1" placeholder="Password" />
                                 <button class="btn_login" id="login">LOGIN</button>
+                                <div id="message1" style="font-size: 12px; left: 0; bottom: 0; margin-top: 15px;">
                             </form>
                         </div>
                         <div>
@@ -156,7 +216,7 @@
                                 <input type="password" id="userPwCheck2" placeholder="Confirm Password" />
                                 <input type="text" id="clph" name="clph" placeholder="phone number" maxlength="13"/>
                                 <button class="btn_sign_up" id="signUp">SIGN UP</button>
-                                <div id="message" style="font-size: 12px; left: 0; bottom: 0; margin-top: 15px;">
+                                <div id="message2" style="font-size: 12px; left: 0; bottom: 0; margin-top: 15px;">
                             </form>
                         </div>
                     </div>

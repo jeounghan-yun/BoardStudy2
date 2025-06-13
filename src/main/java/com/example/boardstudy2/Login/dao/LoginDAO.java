@@ -28,4 +28,14 @@ public class LoginDAO extends CommonMapper {
     public int InsertSignUp(Map<String, Object> map) throws Exception {
         return (int) insert("mapper.login.InsertSignUp", map);
     }
+
+    /**
+     * 로그인
+     * @param map
+     * @return
+     * @throws Exception
+     */
+    public String SelectSignIn(Map<String, Object> map) throws Exception {
+        return (String) selectOne("mapper.login.SelectSignIn", map);
+    }
 }
